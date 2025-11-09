@@ -11,6 +11,8 @@ import { parseRepoConfig } from '../repo-config';
 export function KeystaticSetup(props: { config: GitHubConfig }) {
   const [deployedURL, setDeployedURL] = useState('');
   const [organization, setOrganization] = useState('');
+  const basePath = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
+
   return (
     <Flex alignItems="center" justifyContent="center" margin="xxlarge">
       <Flex
@@ -77,19 +79,16 @@ export function KeystaticSetup(props: { config: GitHubConfig }) {
               parseRepoConfig(props.config.storage.repo).owner
             } Keystatic`,
             url: deployedURL
-              ? new URL('/keystatic', deployedURL).toString()
-              : `${window.location.origin}/keystatic`,
+              ? new URL(basePath, deployedURL).toString()
+              : `${window.location.origin}${basePath}`,
             public: true,
-            redirect_url: `${window.location.origin}/api/keystatic/github/created-app`,
+            redirect_url: `${window.location.origin}/api${basePath}/github/created-app`,
             callback_urls: [
-              `${window.location.origin}/api/keystatic/github/oauth/callback`,
-              `http://127.0.0.1/api/keystatic/github/oauth/callback`,
+              `${window.location.origin}/api${basePath}/github/oauth/callback`,
+              `http://127.0.0.1/api${basePath}/github/oauth/callback`,
               ...(deployedURL
                 ? [
-                    new URL(
-                      '/api/keystatic/github/oauth/callback',
-                      deployedURL
-                    ).toString(),
+                    new URL(`/api${basePath}/github/oauth/callback`, deployedURL).toString(),
                   ]
                 : []),
             ],

@@ -72,14 +72,15 @@ function RedirectToBranch(props: { config: Config }) {
   useEffect(() => {
     if (error?.response?.status === 401) {
       if (props.config.storage.kind === 'github') {
-        window.location.href = '/api/keystatic/github/login';
+        window.location.href = `${'/api' + ((typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic')}/github/login`;
       } else {
         redirectToCloudAuth('', props.config);
       }
     }
     if (data?.repository?.defaultBranchRef) {
+      const __ksBase = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
       push(
-        `/keystatic/branch/${encodeURIComponent(
+        `${__ksBase}/branch/${encodeURIComponent(
           data.repository.defaultBranchRef.name
         )}`
       );
@@ -91,7 +92,7 @@ function RedirectToBranch(props: { config: Config }) {
           'NOT_FOUND') ||
       (error?.graphQLErrors?.[0]?.originalError as any)?.type === 'FORBIDDEN'
     ) {
-      window.location.href = '/api/keystatic/github/repo-not-found';
+      window.location.href = `${'/api' + ((typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic')}/github/repo-not-found`;
     }
   }, [data, error, push, props.config]);
   return null;
@@ -139,11 +140,11 @@ function PageInner({ config }: { config: Config }) {
       return <Text>Not found</Text>;
     }
     branch = params[1];
-    basePath = `/keystatic/branch/${encodeURIComponent(branch)}`;
+    basePath = `${(typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic'}/branch/${encodeURIComponent(branch)}`;
     parsedParams = parseParamsWithoutBranch(params.slice(2));
   } else {
     parsedParams = parseParamsWithoutBranch(params);
-    basePath = '/keystatic';
+    basePath = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
   }
   return wrapper(
     <AppShell config={config} currentBranch={branch || ''} basePath={basePath}>
@@ -232,7 +233,7 @@ function AuthWrapper(props: {
       return (
         <Flex justifyContent="center" alignItems="center" height="100vh">
           <Button
-            href={`/api/keystatic/github/login${
+            href={`${('/api' + ((typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic'))}/github/login${
               router.params.length
                 ? `?${new URLSearchParams({
                     from: router.params.map(encodeURIComponent).join('/'),

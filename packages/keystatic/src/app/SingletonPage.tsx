@@ -304,8 +304,9 @@ function SingletonPageInner(
             <CreateBranchDuringUpdateDialog
               branchOid={baseCommit}
               onCreate={async newBranch => {
+                const __ksBase = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
                 router.push(
-                  `/keystatic/branch/${encodeURIComponent(
+                  `${__ksBase}/branch/${encodeURIComponent(
                     newBranch
                   )}/singleton/${encodeURIComponent(props.singleton)}`
                 );

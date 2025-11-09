@@ -1,15 +1,15 @@
+import { handleGitHubAppCreation, localModeApiHandler } from '#api-handler';
+import { webcrypto } from '#webcrypto';
 import * as cookie from 'cookie';
 import * as s from 'superstruct';
 import { Config } from '..';
-import {
-  KeystaticResponse,
-  KeystaticRequest,
-  redirect,
-} from './internal-utils';
-import { handleGitHubAppCreation, localModeApiHandler } from '#api-handler';
-import { webcrypto } from '#webcrypto';
 import { bytesToHex } from '../hex';
 import { decryptValue, encryptValue } from './encryption';
+import {
+  KeystaticRequest,
+  KeystaticResponse,
+  redirect,
+} from './internal-utils';
 
 export type APIRouteConfig = {
   /** @default process.env.KEYSTATIC_GITHUB_CLIENT_ID */
@@ -20,6 +20,8 @@ export type APIRouteConfig = {
   secret?: string;
   localBaseDirectory?: string;
   config: Config<any, any>;
+  /** Base UI path, default '/keystatic' */
+  basePath?: string;
 };
 
 type InnerAPIRouteConfig = {
@@ -27,6 +29,7 @@ type InnerAPIRouteConfig = {
   clientSecret: string;
   secret: string;
   config: Config;
+  basePath: string
 };
 
 const keystaticRouteRegex =
@@ -60,7 +63,9 @@ export function makeGenericAPIRouteHandler(
     secret:
       _config.secret ?? tryOrUndefined(() => process.env.KEYSTATIC_SECRET),
     config: _config.config,
+    basePath: _config.basePath ?? '/keystatic',
   };
+  const basePath = _config2.basePath ?? '/keystatic';
 
   const getParams = (req: KeystaticRequest) => {
     let url;
@@ -76,7 +81,7 @@ export function makeGenericAPIRouteHandler(
       );
     }
     return url.pathname
-      .replace(/^\/api\/keystatic\/?/, '')
+      .replace(/^\/api\/(?:keystatic|[^/]+)\/?/, '')
       .split('/')
       .map(x => decodeURIComponent(x))
       .filter(Boolean);
@@ -119,14 +124,14 @@ export function makeGenericAPIRouteHandler(
       const params = getParams(req);
       const joined = params.join('/');
       if (joined === 'github/created-app') {
-        return createdGithubApp(req, options?.slugEnvName);
+        return createdGithubApp(req, options?.slugEnvName, basePath);
       }
       if (
         joined === 'github/login' ||
         joined === 'github/repo-not-found' ||
         joined === 'github/logout'
       ) {
-        return redirect('/keystatic/setup');
+        return redirect(`${basePath}/setup`);
       }
       return { status: 404, body: 'Not Found' };
     };
@@ -136,6 +141,7 @@ export function makeGenericAPIRouteHandler(
     clientSecret: _config2.clientSecret,
     secret: _config2.secret,
     config: _config2.config,
+    basePath,
   };
 
   return async function keystaticAPIRoute(
@@ -172,7 +178,7 @@ export function makeGenericAPIRouteHandler(
           }
         );
       }
-      return redirect('/keystatic', [
+      return redirect(basePath, [
         ['Set-Cookie', immediatelyExpiringCookie('keystatic-gh-access-token')],
         ['Set-Cookie', immediatelyExpiringCookie('keystatic-gh-refresh-token')],
       ]);
@@ -208,7 +214,7 @@ async function githubOauthCallback(
       status: 400,
       body: `An error occurred when trying to authenticate with GitHub:\n${errorDescription}${
         error === 'redirect_uri_mismatch'
-          ? `\n\nIf you were trying to sign in locally and recently upgraded Keystatic from @keystatic/core@0.0.69 or below, you need to add \`http://127.0.0.1/api/keystatic/github/oauth/callback\` as a callback URL in your GitHub app.`
+          ? `\n\nIf you were trying to sign in locally and recently upgraded Keystatic from @keystatic/core@0.0.69 or below, you need to add \`http://127.0.0.1/api/${config.basePath}/github/oauth/callback\` as a callback URL in your GitHub app.`
           : ''
       }`,
     };
@@ -252,7 +258,7 @@ async function githubOauthCallback(
       status: 200,
     };
   }
-  return redirect(`/keystatic${from ? `/${from}` : ''}`, headers);
+  return redirect(`${config.basePath}${from ? `/${from}` : ''}`, headers);
 }
 
 async function getTokenCookies(
@@ -355,7 +361,7 @@ async function githubRepoNotFound(
 ): Promise<KeystaticResponse> {
   const headers = await refreshGitHubAuth(req, config);
   if (headers) {
-    return redirect('/keystatic/repo-not-found', headers);
+    return redirect(`${config.basePath}/repo-not-found`, headers);
   }
   return githubLogin(req, config);
 }
@@ -373,10 +379,8 @@ async function githubLogin(
   const state = bytesToHex(webcrypto.getRandomValues(new Uint8Array(10)));
   const url = new URL('https://github.com/login/oauth/authorize');
   url.searchParams.set('client_id', config.clientId);
-  url.searchParams.set(
-    'redirect_uri',
-    `${reqUrl.origin}/api/keystatic/github/oauth/callback`
-  );
+  const apiBase = reqUrl.pathname.replace(/\/github\/login$/, '');
+  url.searchParams.set('redirect_uri', `${reqUrl.origin}${apiBase}oauth/callback`);
   if (from === '/') {
     return redirect(url.toString());
   }
@@ -399,12 +403,13 @@ async function githubLogin(
 
 async function createdGithubApp(
   req: KeystaticRequest,
-  slugEnvVarName: string | undefined
+  slugEnvVarName: string | undefined,
+  basePath: string
 ): Promise<KeystaticResponse> {
   if (process.env.NODE_ENV !== 'development') {
     return { status: 400, body: 'App setup only allowed in development' };
   }
-  return handleGitHubAppCreation(req, slugEnvVarName);
+  return handleGitHubAppCreation(req, slugEnvVarName, basePath);
 }
 
 function immediatelyExpiringCookie(name: string) {

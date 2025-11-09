@@ -1,3 +1,5 @@
+'use client';
+
 import { useLocale } from '@react-aria/i18n';
 import { createContext, PropsWithChildren, useContext, useRef } from 'react';
 

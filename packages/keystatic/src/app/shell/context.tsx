@@ -22,8 +22,10 @@ export function useConfig(): Config {
 
 type AppStateType = { basePath: string };
 
+const basePath = ((typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic');
+
 export const AppStateContext = createContext<AppStateType>({
-  basePath: '/keystatic',
+  basePath,
 });
 
 export function useAppState() {

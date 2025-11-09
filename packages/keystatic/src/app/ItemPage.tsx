@@ -298,7 +298,8 @@ function ItemPageInner(
             <CreateBranchDuringUpdateDialog
               branchOid={baseCommit}
               onCreate={async newBranch => {
-                const itemBasePath = `/keystatic/branch/${encodeURIComponent(
+                const __ksBase = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
+                const itemBasePath = `${__ksBase}/branch/${encodeURIComponent(
                   newBranch
                 )}/collection/${encodeURIComponent(collection)}/item/`;
                 router.push(itemBasePath + encodeURIComponent(itemSlug));

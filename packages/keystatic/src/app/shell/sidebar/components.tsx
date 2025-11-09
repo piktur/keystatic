@@ -168,7 +168,7 @@ export function UserMenu(user: {
         label: 'Log out',
         href:
           config.storage.kind === 'github'
-            ? '/api/keystatic/github/logout'
+            ? (('/api' + ((typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic')) + '/github/logout')
             : undefined,
         icon: logOutIcon,
       },

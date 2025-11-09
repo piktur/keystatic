@@ -34,7 +34,8 @@ const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export async function handleGitHubAppCreation(
   req: KeystaticRequest,
-  slugEnvVarName: string | undefined
+  slugEnvVarName: string | undefined,
+  basePath: string = '/keystatic'
 ): Promise<KeystaticResponse> {
   const searchParams = new URL(req.url, 'https://localhost').searchParams;
   const code = searchParams.get('code');
@@ -85,7 +86,7 @@ ${
   const newEnv = prevEnv ? `${prevEnv}\n\n${toAddToEnv}` : toAddToEnv;
   await fs.writeFile('.env', newEnv);
   await wait(200);
-  return redirect('/keystatic/created-github-app?slug=' + ghAppDataResult.slug);
+  return redirect(`${basePath}/created-github-app?slug=` + ghAppDataResult.slug);
 }
 
 export function localModeApiHandler(

@@ -595,23 +595,29 @@ function CreateItemInner(props: {
           <CreateBranchDuringUpdateDialog
             branchOid={baseCommit}
             onCreate={async newBranch => {
-              router.push(
-                `/keystatic/branch/${encodeURIComponent(
-                  newBranch
-                )}/collection/${encodeURIComponent(props.collection)}/create`
-              );
+              {
+                const __ksBase = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
+                router.push(
+                  `${__ksBase}/branch/${encodeURIComponent(
+                    newBranch
+                  )}/collection/${encodeURIComponent(props.collection)}/create`
+                );
+              }
               if (
                 await props.createItem({ branch: newBranch, sha: baseCommit })
               ) {
                 const slug = getSlugFromState(collectionConfig, props.state);
 
-                router.push(
-                  `/keystatic/branch/${encodeURIComponent(
-                    newBranch
-                  )}/collection/${encodeURIComponent(
-                    props.collection
-                  )}/item/${encodeURIComponent(slug)}`
-                );
+                {
+                  const __ksBase = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
+                  router.push(
+                    `${__ksBase}/branch/${encodeURIComponent(
+                      newBranch
+                    )}/collection/${encodeURIComponent(
+                      props.collection
+                    )}/item/${encodeURIComponent(slug)}`
+                  );
+                }
               }
             }}
             reason={createResult.reason}
