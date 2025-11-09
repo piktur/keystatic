@@ -34,6 +34,7 @@ function ObjectFieldInputEntry({
   return (
     <FieldContextProvider value={span}>
       <div
+        data-field-label={'label' in field.schema ? field.schema.label : ''}
         className={css({
           gridColumn: `span ${span}`,
 
