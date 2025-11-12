@@ -1,0 +1,6 @@
+{
+  "key": "mustHaveAtMostItems",
+  "value": "Must have at most {count} items.",
+  "notes": "",
+  "type": "collection-item"
+}

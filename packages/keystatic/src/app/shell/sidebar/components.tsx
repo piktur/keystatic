@@ -15,6 +15,7 @@ import { Avatar } from '@keystar/ui/avatar';
 import { ActionButton } from '@keystar/ui/button';
 import { AlertDialog, DialogContainer } from '@keystar/ui/dialog';
 import { Icon } from '@keystar/ui/icon';
+import { moreHorizontalIcon } from '@keystar/ui/icon/icons/moreHorizontalIcon';
 import { logOutIcon } from '@keystar/ui/icon/icons/logOutIcon';
 import { gitPullRequestIcon } from '@keystar/ui/icon/icons/gitPullRequestIcon';
 import { gitBranchPlusIcon } from '@keystar/ui/icon/icons/gitBranchPlusIcon';
@@ -54,6 +55,7 @@ import {
 } from '../data';
 import { useViewer } from '../viewer-data';
 import { useThemeContext } from '../theme';
+import { locales as supportedLocales } from '../../l10n/locales';
 import { useImageLibraryURL } from '../../../component-blocks/cloud-image-preview';
 import { clearObjectCache } from '../../object-cache';
 import { clearDrafts } from '../../persistence';
@@ -86,6 +88,7 @@ const themeItems = Object.entries(THEME_MODE).map(([id, { icon, label }]) => ({
 
 export function ThemeMenu() {
   let { theme, setTheme } = useThemeContext();
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   let matchesDark = useMediaQuery('(prefers-color-scheme: dark)');
   let icon = THEME_MODE[theme].icon;
   if (theme === 'auto') {
@@ -94,7 +97,7 @@ export function ThemeMenu() {
 
   return (
     <MenuTrigger align="end">
-      <ActionButton aria-label="theme" prominence="low">
+      <ActionButton aria-label={stringFormatter.format('theme')} prominence="low">
         <Icon src={icon} />
       </ActionButton>
       <Menu
@@ -115,6 +118,78 @@ export function ThemeMenu() {
   );
 }
 
+// Preferences (Theme + Locale)
+// -----------------------------------------------------------------------------
+
+export function PreferencesMenu() {
+  const { theme, setTheme } = useThemeContext();
+  const matchesDark = useMediaQuery('(prefers-color-scheme: dark)');
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+
+  const themeIcon = (() => {
+    if (theme === 'auto') return matchesDark ? moonIcon : sunIcon;
+    return THEME_MODE[theme].icon;
+  })();
+
+  const themeSection: MenuSection = {
+    key: 'appearance',
+    label: stringFormatter.format('appearance'),
+    children: [
+      { key: 'theme:light', icon: sunIcon, label: stringFormatter.format('themeLight') },
+      { key: 'theme:dark', icon: moonIcon, label: stringFormatter.format('themeDark') },
+      { key: 'theme:auto', icon: monitorIcon, label: stringFormatter.format('themeSystem') },
+    ],
+  } as any;
+
+  const localeSection: MenuSection = {
+    key: 'language',
+    label: stringFormatter.format('language'),
+    children: (Object.keys(supportedLocales) as Array<keyof typeof supportedLocales>).map(k => ({
+      key: `locale:${k as string}`,
+      icon: themeIcon, // keep spacing consistent; icon is optional
+      label: supportedLocales[k],
+    })) as any,
+  };
+
+  return (
+    <MenuTrigger align="end">
+      <ActionButton aria-label={stringFormatter.format('preferences')} prominence="low">
+        <Icon src={moreHorizontalIcon} />
+      </ActionButton>
+      <Menu
+        aria-label={stringFormatter.format('preferences')}
+        items={[themeSection, localeSection]}
+        onAction={key => {
+          const action = String(key);
+          if (action.startsWith('theme:')) {
+            setTheme(action.split(':')[1] as ColorScheme);
+            return;
+          }
+          if (action.startsWith('locale:')) {
+            const next = action.split(':')[1];
+            try {
+              const url = new URL(window.location.href);
+              url.searchParams.set('locale', next);
+              window.location.replace(url.toString());
+            } catch {}
+          }
+        }}
+      >
+        {section => (
+          <Section key={section.key} aria-label={section.label} items={section.children}>
+            {item => (
+              <Item key={item.key} textValue={item.label}>
+                <Icon src={item.icon} />
+                <Text>{item.label}</Text>
+              </Item>
+            )}
+          </Section>
+        )}
+      </Menu>
+    </MenuTrigger>
+  );
+}
+
 // User controls
 // -----------------------------------------------------------------------------
 
@@ -126,6 +201,7 @@ type UserData = {
 
 export function UserActions() {
   let config = useConfig();
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   let userData = useUserData();
   let router = useRouter();
 
@@ -144,7 +220,7 @@ export function UserActions() {
         }}
         flex
       >
-        Sign into Cloud
+        {stringFormatter.format('signIntoCloud')}
       </ActionButton>
     );
   }
@@ -256,11 +332,12 @@ const UserDetailsButton = forwardRef(function UserDetailsButton(
   ref: ForwardedRef<HTMLButtonElement>
 ) {
   let { avatarUrl, login, name, ...otherProps } = props;
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   return (
     <ActionButton
       {...otherProps}
       ref={ref}
-      aria-label="User menu"
+      aria-label={stringFormatter.format('userMenu')}
       prominence="low"
       flexGrow={1}
       UNSAFE_className={css({ justifyContent: 'start', textAlign: 'start' })}
@@ -361,7 +438,7 @@ export function GitMenu() {
         href: repoURL,
         target: '_blank',
         rel: 'noopener noreferrer',
-        label: 'Github repo', // TODO: l10n
+        label: stringFormatter.format('githubRepo'),
       },
     ];
 
@@ -387,7 +464,7 @@ export function GitMenu() {
           href: `${repoURL}/pull/${prNumber}`,
           target: '_blank',
           rel: 'noopener noreferrer',
-          label: `Pull Request #${prNumber}`,
+          label: `${stringFormatter.format('pullRequest')} #${prNumber}`,
         });
       }
     }
@@ -399,7 +476,7 @@ export function GitMenu() {
         href: forkRepoUrl,
         target: '_blank',
         rel: 'noopener noreferrer',
-        label: 'View fork', // TODO: l10n
+        label: stringFormatter.format('viewFork'),
       });
     }
 
@@ -420,7 +497,7 @@ export function GitMenu() {
     if (repoSection.length) {
       items.push({
         key: 'repo-section',
-        label: 'Repository', // TODO: l10n
+        label: stringFormatter.format('repository'),
         children: repoSection,
       });
     }
@@ -431,7 +508,7 @@ export function GitMenu() {
   return (
     <>
       <ActionMenu
-        aria-label="git actions"
+        aria-label={stringFormatter.format('gitActions')}
         align="end"
         items={gitMenuItems}
         onAction={key => {
@@ -484,10 +561,10 @@ export function GitMenu() {
       <DialogContainer onDismiss={toggleDeleteBranchDialog}>
         {deleteBranchDialogVisible && (
           <AlertDialog
-            title="Delete branch"
+            title={stringFormatter.format('deleteBranchTitle')}
             tone="critical"
-            cancelLabel="Cancel"
-            primaryActionLabel="Yes, delete"
+            cancelLabel={stringFormatter.format('cancel')}
+            primaryActionLabel={stringFormatter.format('yesDelete')}
             autoFocusButton="cancel"
             onPrimaryAction={async () => {
               if (repoInfo) {
@@ -503,8 +580,7 @@ export function GitMenu() {
               }
             }}
           >
-            Are you sure you want to delete the "{currentBranch}" branch? This
-            cannot be undone.
+            {stringFormatter.format('deleteBranchConfirmBody', { branch: currentBranch })}
           </AlertDialog>
         )}
       </DialogContainer>

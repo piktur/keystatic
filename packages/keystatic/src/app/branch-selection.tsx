@@ -16,7 +16,7 @@ import { css, tokenSchema } from '@keystar/ui/style';
 import { TextField } from '@keystar/ui/text-field';
 import { Heading, Text } from '@keystar/ui/typography';
 
-import l10nMessages from './l10n';
+import localizedMessages from '#l10n';
 import { useRouter } from './router';
 import {
   Ref_base,
@@ -31,7 +31,7 @@ export function BranchPicker() {
   const branches = useBranches();
   const repoInfo = useRepoInfo();
   const currentBranch = useCurrentBranch();
-  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const router = useRouter();
   const config = useConfig();
   const branchPrefix = getBranchPrefix(config);
@@ -105,7 +105,7 @@ export function CreateBranchDialog(props: {
   const branches = useBranches();
   const currentBranch = useCurrentBranch();
   const isDefaultBranch = repoInfo?.defaultBranch === currentBranch;
-  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const [{ error, fetching }, createBranch] = useCreateBranchMutation();
   const createBranchSubmitButtonId = 'create-branch-submit-button';
 
@@ -186,7 +186,9 @@ export function CreateBranchDialog(props: {
                 <Radio value={repoInfo!.defaultBranch}>
                   <Text>
                     {repoInfo!.defaultBranch}
-                    <Text visuallyHidden>.</Text>
+                    <Text visuallyHidden>
+                      {stringFormatter.format('sentencePeriod')}
+                    </Text>
                   </Text>
                   <Text slot="description">
                     {stringFormatter.format('theDefaultBranchInYourRepository')}
@@ -195,7 +197,9 @@ export function CreateBranchDialog(props: {
                 <Radio value={currentBranch}>
                   <Text>
                     {currentBranch}
-                    <Text visuallyHidden>.</Text>
+                    <Text visuallyHidden>
+                      {stringFormatter.format('sentencePeriod')}
+                    </Text>
                   </Text>
                   <Text slot="description">
                     {stringFormatter.format('theCurrentlyCheckedOutBranch')}

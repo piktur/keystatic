@@ -24,6 +24,8 @@ import { Picker } from '@keystar/ui/picker';
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style';
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip';
 import { Text, Kbd } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '../../../../app/l10n';
 
 import { useEntryLayoutSplitPaneContext } from '../../../../app/entry-form';
 
@@ -49,6 +51,7 @@ export function Toolbar({
   documentFeatures: DocumentFeatures;
   viewState?: { expanded: boolean; toggle: () => void };
 }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const componentBlocks = useDocumentEditorConfig().componentBlocks;
   let hasComponentBlocksForInsertMenu = false,
     hasComponentBlocksForToolbar = false;
@@ -139,7 +142,11 @@ export function Toolbar({
                     src={viewState.expanded ? minimizeIcon : maximizeIcon}
                   />
                 </Button>
-                <Tooltip>{viewState.expanded ? 'Collapse' : 'Expand'}</Tooltip>
+                <Tooltip>
+                  {viewState.expanded
+                    ? stringFormatter.format('collapse')
+                    : stringFormatter.format('expand')}
+                </Tooltip>
               </TooltipTrigger>
             </Flex>
           )
@@ -258,6 +265,7 @@ const HeadingMenu = ({
 }: {
   headingLevels: DocumentFeatures['formatting']['headings']['levels'];
 }) => {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const { editor, textStyles } = useToolbarState();
   const isDisabled = textStyles.allowedHeadingLevels.length === 0;
   const items = useMemo(() => {
@@ -275,7 +283,7 @@ const HeadingMenu = ({
         flexShrink={0}
         width="scale.1700"
         prominence="low"
-        aria-label="Text block"
+        aria-label={stringFormatter.format('textBlock')}
         items={items}
         isDisabled={isDisabled}
         selectedKey={selected}

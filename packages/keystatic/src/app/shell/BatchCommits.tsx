@@ -27,6 +27,8 @@ import {
 } from '@keystar/ui/style';
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip';
 import { Heading, Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '../l10n';
 import { usePrevious } from '@keystar/ui/utils';
 
 import { Config } from '../../config';
@@ -58,11 +60,12 @@ type Change = { href: string; slug: string; type: ChangeType };
 
 export function BatchCommits() {
   let [isOpen, toggleOpen] = useReducer(bool => !bool, false);
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
 
   return (
     <>
       <ActionButton onPress={toggleOpen}>
-        <Text>Commit changes…</Text>
+        <Text>{stringFormatter.format('commitChangesEllipsis')}</Text>
       </ActionButton>
       <DialogContainer onDismiss={toggleOpen}>
         {isOpen && <BatchCommitsDialog />}
@@ -72,6 +75,7 @@ export function BatchCommits() {
 }
 
 function BatchCommitsDialog() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   let router = useRouter();
   let isBelowTablet = useMediaQuery(breakpointQueries.below.tablet);
   let currentBranch = useCurrentBranch();
@@ -106,10 +110,10 @@ function BatchCommitsDialog() {
   ]);
 
   return (
-    <Dialog size="large" ref={dialogRef} aria-label="Review changes">
+    <Dialog size="large" ref={dialogRef} aria-label={stringFormatter.format('reviewChanges')}>
       {!isBelowTablet && (
         <>
-          <Heading ref={headingRef}>Review changes</Heading>
+          <Heading ref={headingRef}>{stringFormatter.format('reviewChanges')}</Heading>
           <Header>
             <BranchPicker />
           </Header>
@@ -162,7 +166,7 @@ function BatchCommitsDialog() {
                 strokeScaling={false}
               />
               <Text color="neutralSecondary" size="medium">
-                No changes to commit
+                {stringFormatter.format('noChangesToCommit')}
               </Text>
             </VStack>
           )}
@@ -192,26 +196,26 @@ function BatchCommitsDialog() {
                 <ChangeTypeIndicator type={item.type} />
               </HStack>
               <TooltipTrigger>
-                <ActionButton aria-label="Revert." marginStart="regular">
+                <ActionButton aria-label={stringFormatter.format('revert')} marginStart="regular">
                   <Icon src={undoIcon} />
                 </ActionButton>
-                <Tooltip>Revert changes to item</Tooltip>
+                <Tooltip>{stringFormatter.format('revertChangesToItem')}</Tooltip>
               </TooltipTrigger>
             </Item>
           )}
         </ListView>
       </Content>
       <ButtonGroup>
-        <Button onPress={dismiss}>Cancel</Button>
+        <Button onPress={dismiss}>{stringFormatter.format('cancel')}</Button>
         <TooltipTrigger isDisabled={!selection.isEmpty}>
           <Button
             onPress={dismiss}
             prominence="high"
             isDisabled={selection.isEmpty}
           >
-            Commit
+            {stringFormatter.format('commit')}
           </Button>
-          <Tooltip>Select files to commit.</Tooltip>
+          <Tooltip>{stringFormatter.format('selectFilesToCommit')}</Tooltip>
         </TooltipTrigger>
       </ButtonGroup>
     </Dialog>

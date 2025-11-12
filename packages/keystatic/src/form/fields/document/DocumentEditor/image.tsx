@@ -21,7 +21,7 @@ import { TextField } from '@keystar/ui/text-field';
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip';
 import { Heading, Text } from '@keystar/ui/typography';
 
-import l10nMessages from '../../../../app/l10n';
+import l10nMessages from '#l10n';
 import { getUploadedImage, useObjectURL } from '../../image/ui';
 import {
   focusWithPreviousSelection,
@@ -301,14 +301,19 @@ function ImageButton() {
   );
 }
 
-export const imageButton = (
-  <TooltipTrigger>
-    <ImageButton />
-    <Tooltip>
-      <Text>Image</Text>
-    </Tooltip>
-  </TooltipTrigger>
-);
+function ImageButtonWithTooltip() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  return (
+    <TooltipTrigger>
+      <ImageButton />
+      <Tooltip>
+        <Text>{stringFormatter.format('image')}</Text>
+      </Tooltip>
+    </TooltipTrigger>
+  );
+}
+
+export const imageButton = <ImageButtonWithTooltip />;
 
 export function withImages(editor: Editor): Editor {
   const { insertData } = editor;

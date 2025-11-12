@@ -283,6 +283,7 @@
     "#react-compiler-runtime": {
       "react-server": "./src/react-compiler-runtime-react-server.ts",
       "default": "./src/react-compiler-runtime.ts"
-    }
+    },
+    "#l10n": "./src/app/l10n/index.js"
   }
 }

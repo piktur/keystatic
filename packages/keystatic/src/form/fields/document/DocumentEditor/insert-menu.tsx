@@ -6,6 +6,7 @@ import scrollIntoView from 'scroll-into-view-if-needed';
 import { useOverlayTrigger } from '@react-aria/overlays';
 import { useListState } from '@react-stately/list';
 import { useOverlayTriggerState } from '@react-stately/overlays';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
 
 import { Item, ListBoxBase, useListBoxLayout } from '@keystar/ui/listbox';
 import { Popover } from '@keystar/ui/overlays';
@@ -23,6 +24,7 @@ import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './u
 import { getUploadedImage } from '../../image/ui';
 import { isBlock } from './editor';
 import { insertTable } from './table/table-ui';
+import localizedMessages from '#l10n';
 
 type Option = {
   label: string;
@@ -158,6 +160,7 @@ export function InsertMenu({
   children: ReactNode;
   text: Text;
 }) {
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const toolbarState = useToolbarState();
   const { editor } = toolbarState;
   const { componentBlocks } = useDocumentEditorConfig();
@@ -294,7 +297,7 @@ export function InsertMenu({
           ref={scrollableRef}
         >
           <ListBoxBase
-            aria-label="Insert block"
+            aria-label={stringFormatter.format('insertBlock')}
             state={state}
             shouldUseVirtualFocus
             layout={layout}

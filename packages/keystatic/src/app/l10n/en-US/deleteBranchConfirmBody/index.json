@@ -1,0 +1,6 @@
+{
+  "key": "deleteBranchConfirmBody",
+  "value": "Are you sure you want to delete the \"{branch}\" branch? This cannot be undone.",
+  "notes": "",
+  "type": "git-related"
+}

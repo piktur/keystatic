@@ -13,7 +13,7 @@ import { useMemo, useState } from 'react';
 import { clientSideValidateProp } from '../../../../errors';
 import { FormValueContentFromPreviewProps } from '../../../../form-from-preview';
 import { createGetPreviewProps } from '../../../../preview-props';
-import l10nMessages from '../../../../../app/l10n';
+import l10nMessages from '#l10n';
 import { Icon } from '@keystar/ui/icon';
 import { editIcon } from '@keystar/ui/icon/icons/editIcon';
 import { fileUpIcon } from '@keystar/ui/icon/icons/fileUpIcon';

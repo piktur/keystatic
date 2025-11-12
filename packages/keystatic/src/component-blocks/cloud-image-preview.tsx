@@ -2,6 +2,8 @@ import { useOverlayTriggerState } from '@react-stately/overlays';
 import { ClipboardEvent, useEffect, useState } from 'react';
 import { useSelected, useSlateStatic } from 'slate-react';
 import * as s from 'superstruct';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '#l10n';
 
 import {
   ActionButton,
@@ -231,6 +233,7 @@ export function ImageDimensionsInput(props: {
   image: ImageDimensions;
   onChange: (image: ImageDimensions) => void;
 }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const dimensions = useImageDimensions(props.src);
 
   const [constrainProportions, setConstrainProportions] = useState(true);
@@ -260,7 +263,7 @@ export function ImageDimensionsInput(props: {
       <TooltipTrigger>
         <ToggleButton
           isSelected={constrainProportions}
-          aria-label="Constrain proportions"
+          aria-label={stringFormatter.format('constrainProportions')}
           prominence="low"
           onPress={() => {
             setConstrainProportions(state => !state);
@@ -354,6 +357,7 @@ function ImageDialog(props: {
   onChange: (data: CloudImageProps) => void;
   onClose: () => void;
 }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const { image, onCancel, onChange, onClose } = props;
   const [state, setState] = useState<CloudImageProps>(image ?? emptyImageData);
   const [status, setStatus] = useState<ImageStatus>(image ? 'good' : '');
@@ -445,7 +449,7 @@ function ImageDialog(props: {
                   >
                     <ProgressCircle
                       size="small"
-                      aria-label="Checking…"
+                      aria-label={stringFormatter.format('checkingEllipsis')}
                       isIndeterminate
                     />
                   </Flex>

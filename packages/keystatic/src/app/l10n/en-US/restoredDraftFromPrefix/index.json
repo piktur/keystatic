@@ -1,0 +1,6 @@
+{
+  "key": "restoredDraftFromPrefix",
+  "value": "Restored draft from ",
+  "notes": "Trailing space intentional.",
+  "type": "global"
+}

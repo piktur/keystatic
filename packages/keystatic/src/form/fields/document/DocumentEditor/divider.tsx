@@ -6,6 +6,8 @@ import { ActionButton } from '@keystar/ui/button';
 import { tokenSchema } from '@keystar/ui/style';
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip';
 import { Text, Kbd } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '#l10n';
 
 import { useToolbarState } from './toolbar-state';
 import { insertNodesButReplaceIfSelectionIsAtEmptyParagraphOrHeading } from './ui-utils';
@@ -41,15 +43,20 @@ const DividerButton = () => {
   );
 };
 
-export const dividerButton = (
-  <TooltipTrigger delay={200}>
-    <DividerButton />
-    <Tooltip>
-      <Text>Divider</Text>
-      <Kbd>---</Kbd>
-    </Tooltip>
-  </TooltipTrigger>
-);
+function DividerButtonWithTooltip() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  return (
+    <TooltipTrigger delay={200}>
+      <DividerButton />
+      <Tooltip>
+        <Text>{stringFormatter.format('divider')}</Text>
+        <Kbd>---</Kbd>
+      </Tooltip>
+    </TooltipTrigger>
+  );
+}
+
+export const dividerButton = <DividerButtonWithTooltip />;
 
 export function DividerElement({ attributes, children }: RenderElementProps) {
   const selected = useSelected();

@@ -1,0 +1,6 @@
+{
+  "key": "selectFilesToCommit",
+  "value": "Select files to commit.",
+  "notes": "",
+  "type": "git-related"
+}

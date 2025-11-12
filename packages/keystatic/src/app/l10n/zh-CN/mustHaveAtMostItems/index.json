@@ -1,0 +1,6 @@
+{
+  "key": "mustHaveAtMostItems",
+  "value": "最多只能有 {count} 个项目。",
+  "notes": "",
+  "type": "collection-item"
+}

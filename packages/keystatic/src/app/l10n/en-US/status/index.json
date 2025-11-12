@@ -1,0 +1,6 @@
+{
+  "key": "status",
+  "value": "Status",
+  "notes": "aria label for status column icon",
+  "type": "collection-list"
+}

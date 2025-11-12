@@ -4,6 +4,8 @@ import { isElementActive } from '../utils';
 import { getListTypeAbove, useToolbarState } from '../toolbar-state';
 import { ActionGroup, Item } from '@keystar/ui/action-group';
 import { Kbd, Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '#l10n';
 import { listIcon } from '@keystar/ui/icon/icons/listIcon';
 import { listOrderedIcon } from '@keystar/ui/icon/icons/listOrderedIcon';
 import { ReactEditor, RenderElementProps } from 'slate-react';
@@ -51,6 +53,7 @@ export const toggleList = (
 export function ListButtons(props: {
   lists: { ordered: boolean; unordered: boolean };
 }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const { editor, lists } = useToolbarState();
   return useMemo(() => {
     const disabledKeys: string[] = [];
@@ -63,7 +66,7 @@ export function ListButtons(props: {
     return (
       <ActionGroup
         flexShrink={0}
-        aria-label="Lists"
+        aria-label={stringFormatter.format('lists')}
         selectionMode="single"
         buttonLabelBehavior="hide"
         density="compact"
@@ -80,16 +83,16 @@ export function ListButtons(props: {
       >
         {[
           props.lists.unordered && (
-            <Item key="unordered" textValue="Bullet List (- )">
+            <Item key="unordered" textValue={stringFormatter.format('bulletList') + ' (- )'}>
               <Icon src={listIcon} />
-              <Text>Bullet List</Text>
+              <Text>{stringFormatter.format('bulletList')}</Text>
               <Kbd>-⎵</Kbd>
             </Item>
           ),
           props.lists.ordered && (
-            <Item key="ordered" textValue="Numbered List (1.)">
+            <Item key="ordered" textValue={stringFormatter.format('numberedList') + ' (1.)'}>
               <Icon src={listOrderedIcon} />
-              <Text>Numbered List</Text>
+              <Text>{stringFormatter.format('numberedList')}</Text>
               <Kbd>1.⎵</Kbd>
             </Item>
           ),

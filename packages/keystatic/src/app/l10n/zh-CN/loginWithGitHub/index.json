@@ -1,0 +1,6 @@
+{
+  "key": "loginWithGitHub",
+  "value": "使用 GitHub 登录",
+  "notes": "",
+  "type": "auth"
+}

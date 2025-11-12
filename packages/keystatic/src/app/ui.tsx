@@ -12,6 +12,8 @@ import { fileX2Icon } from '@keystar/ui/icon/icons/fileX2Icon';
 import { githubIcon } from '@keystar/ui/icon/icons/githubIcon';
 import { Flex } from '@keystar/ui/layout';
 import { Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from './l10n';
 
 import { CloudConfig, Config, GitHubConfig } from '../config';
 import { CollectionPage } from './CollectionPage';
@@ -100,6 +102,7 @@ function RedirectToBranch(props: { config: Config }) {
 
 function PageInner({ config }: { config: Config }) {
   const { params } = useRouter();
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   let branch = null,
     parsedParams,
     basePath: string;
@@ -137,7 +140,7 @@ function PageInner({ config }: { config: Config }) {
       }
     }
     if (params[0] !== 'branch' || params.length < 2) {
-      return <Text>Not found</Text>;
+      return <Text>{stringFormatter.format('notFound')}</Text>;
     }
     branch = params[1];
     basePath = `${(typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic'}/branch/${encodeURIComponent(branch)}`;
@@ -154,8 +157,8 @@ function PageInner({ config }: { config: Config }) {
             <PageBody>
               <EmptyState
                 icon={fileX2Icon}
-                title="Not found"
-                message="This page could not be found."
+                title={stringFormatter.format('notFound')}
+                message={stringFormatter.format('pageNotFound')}
               />
             </PageBody>
           </PageRoot>
@@ -216,6 +219,7 @@ function AuthWrapper(props: {
     'unknown'
   );
   const router = useRouter();
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   useEffect(() => {
     getAuth(props.config).then(auth => {
       if (auth) {
@@ -245,7 +249,7 @@ function AuthWrapper(props: {
             target="_top"
           >
             <Icon src={githubIcon} />
-            <Text>Log in with GitHub</Text>
+            <Text>{stringFormatter.format('loginWithGitHub')}</Text>
           </Button>
         </Flex>
       );
@@ -261,7 +265,7 @@ function AuthWrapper(props: {
               );
             }}
           >
-            <Text>Log in with Keystatic Cloud</Text>
+            <Text>{stringFormatter.format('loginWithKeystaticCloud')}</Text>
           </Button>
         </Flex>
       );
@@ -288,6 +292,7 @@ function RedirectToLoopback(props: { children: ReactNode }) {
 export function Keystatic(props: {
   config: Config;
   appSlug?: { envName: string; value: string | undefined };
+  basePath?: string
 }) {
   if (props.config.storage.kind === 'github') {
     assertValidRepoConfig(props.config.storage.repo);

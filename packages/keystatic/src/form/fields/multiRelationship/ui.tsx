@@ -11,6 +11,8 @@ import { VStack } from '@keystar/ui/layout';
 import { ListView } from '@keystar/ui/list-view';
 import { css, tokenSchema } from '@keystar/ui/style';
 import { Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '#l10n';
 
 import { FormFieldInputProps } from '../../api';
 import { useSlugsInCollection } from '../../../app/useSlugsInCollection';
@@ -25,6 +27,7 @@ export function MultiRelationshipInput(
     description: string | undefined;
   }
 ) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const valAsObjects = useMemo(() => {
     return props.value.map(key => ({ key }));
   }, [props.value]);
@@ -57,16 +60,22 @@ export function MultiRelationshipInput(
         label={props.label}
         description={props.description}
         selectedKey={null}
-        placeholder={items.length === 0 ? 'All selected' : undefined}
+        placeholder={
+          items.length === 0 ? stringFormatter.format('allSelected') : undefined
+        }
         onSelectionChange={key => {
           if (typeof key === 'string') {
             props.onChange([...props.value, key]);
           }
         }}
-        disabledKeys={['No more items…']}
+        disabledKeys={[stringFormatter.format('noMoreItemsEllipsis')]}
         onBlur={onBlur}
         autoFocus={props.autoFocus}
-        defaultItems={items.length ? items : [{ slug: 'No more items…' }]}
+        defaultItems={
+          items.length
+            ? items
+            : [{ slug: stringFormatter.format('noMoreItemsEllipsis') }]
+        }
         isReadOnly={items.length === 0}
         isRequired={
           props.validation?.length?.min !== undefined &&
@@ -99,6 +108,7 @@ function MultiRelationshipListView(
     onChange: (elements: { key: string }[]) => void;
   }
 ) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const [selectedKeys, setSelectedKeys] = useState<Selection>(
     () => new Set([])
   );
@@ -200,9 +210,9 @@ function MultiRelationshipListView(
           }
         }}
       >
-        <Item key="delete" textValue="Remove">
+        <Item key="delete" textValue={stringFormatter.format('remove')}>
           <Icon src={trash2Icon} />
-          <Text>Remove</Text>
+          <Text>{stringFormatter.format('remove')}</Text>
         </Item>
       </ActionBar>
     </ActionBarContainer>
@@ -210,6 +220,7 @@ function MultiRelationshipListView(
 }
 
 function arrayFieldEmptyState() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   return (
     <VStack
       gap="large"
@@ -219,7 +230,7 @@ function arrayFieldEmptyState() {
       padding="regular"
     >
       <Text align="center" color="neutralTertiary">
-        No items selected…
+        {stringFormatter.format('noItemsSelectedEllipsis')}
       </Text>
     </VStack>
   );

@@ -39,7 +39,7 @@ import { Heading, Text } from '@keystar/ui/typography';
 
 import { Config } from '../config';
 import { sortBy } from './collection-sort';
-import l10nMessages from './l10n';
+import localizedMessages from '#l10n';
 import { useRouter } from './router';
 import { EmptyState } from './shell/empty-state';
 import {
@@ -120,7 +120,7 @@ function CollectionPageHeader(props: {
   onSearchTermChange: (value: string) => void;
 }) {
   const { collectionLabel, createHref } = props;
-  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const isAboveMobile = useMediaQuery(breakpointQueries.above.mobile);
   const [searchVisible, setSearchVisible] = useState(isAboveMobile);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -183,7 +183,7 @@ function CollectionPageHeader(props: {
         />
       </div>
       <ActionButton
-        aria-label="show search"
+        aria-label={stringFormatter.format('showSearch')}
         isHidden={searchVisible || { above: 'mobile' }}
         onPress={() => {
           setSearchVisible(true);
@@ -217,6 +217,7 @@ function CollectionPageHeader(props: {
 
 type CollectionPageContentProps = CollectionPageProps & { searchTerm: string };
 function CollectionPageContent(props: CollectionPageContentProps) {
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const trees = useTree();
 
   const tree =
@@ -230,11 +231,11 @@ function CollectionPageContent(props: CollectionPageContentProps) {
     return (
       <EmptyState
         icon={alertCircleIcon}
-        title="Unable to load collection"
+        title={stringFormatter.format('unableToLoadCollection')}
         message={trees.merged.error.message}
         actions={
           <Button tone="accent" href={props.basePath}>
-            Dashboard
+            {stringFormatter.format('dashboard')}
           </Button>
         }
       />
@@ -245,7 +246,7 @@ function CollectionPageContent(props: CollectionPageContentProps) {
     return (
       <EmptyState>
         <ProgressCircle
-          aria-label="Loading Entries"
+          aria-label={stringFormatter.format('loadingEntries')}
           isIndeterminate
           size="large"
         />
@@ -257,18 +258,18 @@ function CollectionPageContent(props: CollectionPageContentProps) {
     return (
       <EmptyState
         icon={listXIcon}
-        title="Empty collection"
+        title={stringFormatter.format('emptyCollectionTitle')}
         message={
           <>
-            There aren't any entries yet.{' '}
+            {stringFormatter.format('emptyCollectionMessagePrefix')}{' '}
             <TextLink
               href={`${props.basePath}/collection/${encodeURIComponent(
                 props.collection
               )}/create`}
             >
-              Create the first entry
+              {stringFormatter.format('createFirstEntry')}
             </TextLink>{' '}
-            to see it here.
+            {stringFormatter.format('emptyCollectionMessageSuffix')}
           </>
         }
       />
@@ -289,6 +290,7 @@ function CollectionTable(
     };
   }
 ) {
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   let { searchTerm } = props;
 
   const repoInfo = useRepoInfo();
@@ -508,8 +510,10 @@ function CollectionTable(
       renderEmptyState={() => (
         <EmptyState
           icon={searchXIcon}
-          title="No results"
-          message={`No items matching "${searchTerm}" were found.`}
+          title={stringFormatter.format('noResultsTitle')}
+          message={stringFormatter.format('noResultsMessage', {
+            query: searchTerm,
+          })}
         />
       )}
       flex
@@ -533,7 +537,7 @@ function CollectionTable(
         {({ name, key, ...options }) =>
           key === STATUS ? (
             <Column key={key} isRowHeader allowsSorting {...options}>
-              <Icon aria-label="Status" src={diffIcon} />
+              <Icon aria-label={stringFormatter.format('status')} src={diffIcon} />
             </Column>
           ) : (
             <Column key={key} isRowHeader allowsSorting {...options}>

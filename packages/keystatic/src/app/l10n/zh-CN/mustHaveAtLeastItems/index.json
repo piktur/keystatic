@@ -1,0 +1,6 @@
+{
+  "key": "mustHaveAtLeastItems",
+  "value": "至少需要 {count} 个项目。",
+  "notes": "",
+  "type": "collection-item"
+}

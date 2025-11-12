@@ -6,6 +6,8 @@ import { containerQueries, css } from '@keystar/ui/style';
 import { TextField } from '@keystar/ui/text-field';
 import { Text } from '@keystar/ui/typography';
 import { useContext, useState } from 'react';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import localizedMessages from '#l10n';
 
 import { FormFieldInputProps } from '../../api';
 import { SlugFieldContext, PathContext } from '../text/path-slug-context';
@@ -22,6 +24,7 @@ export function SlugFieldInput(
     naiveGenerateSlug: (name: string) => string;
   }
 ) {
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages)
   const slugContext = useContext(SlugFieldContext);
   const path = useContext(PathContext);
   const slugInfo =
@@ -104,7 +107,7 @@ export function SlugFieldInput(
         />
         <Flex gap="regular" direction="column">
           <ActionButton
-            aria-label="regenerate"
+            aria-label={stringFormatter.format('regenerate')}
             onPress={() => {
               props.onChange({
                 name: props.value.name,

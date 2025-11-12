@@ -1,0 +1,6 @@
+{
+  "key": "deleteBranchConfirmBody",
+  "value": "确定要删除“{branch}”分支吗？该操作不可撤销。",
+  "notes": "",
+  "type": "git-related"
+}

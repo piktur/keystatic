@@ -1,7 +1,8 @@
 'use client';
 
-import { useLocale } from '@react-aria/i18n';
+import { useLocale, useLocalizedStringFormatter } from '@react-aria/i18n';
 import { createContext, PropsWithChildren, useContext, useRef } from 'react';
+import l10nMessages from '#l10n';
 
 import { ActionButton } from '@keystar/ui/button';
 import { Icon } from '@keystar/ui/icon';
@@ -47,6 +48,7 @@ export const PageRoot = ({
 
 export const PageHeader = ({ children }: PropsWithChildren) => {
   const sidebarState = useSidebar();
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const { direction } = useLocale();
 
@@ -65,7 +67,7 @@ export const PageHeader = ({ children }: PropsWithChildren) => {
       >
         <ActionButton
           prominence="low"
-          aria-label="Open app navigation"
+          aria-label={stringFormatter.format('openAppNavigation')}
           aria-pressed={sidebarState.isOpen}
           isHidden={sidebarState.isOpen ? { above: 'tablet' } : undefined}
           onPress={sidebarState.toggle}

@@ -1,4 +1,5 @@
 import { ClipboardEvent, useEffect, useId, useState } from 'react';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
 
 import { ObjectField, PreviewProps } from '@keystatic/core';
 import { ClearButton } from '@keystar/ui/button';
@@ -25,6 +26,7 @@ import {
 import { useConfig } from '../../../app/shell/context';
 import { isValidURL } from '../document/DocumentEditor/isValidURL';
 import { useEventCallback } from '../document/DocumentEditor/ui-utils';
+import l10nMessages from '#l10n';
 
 function ImageField(props: {
   image: CloudImageProps;
@@ -33,6 +35,7 @@ function ImageField(props: {
   autoFocus?: boolean;
   onChange: (data: CloudImageProps) => void;
 }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const { image, onChange } = props;
   const [status, setStatus] = useState<ImageStatus>(image.src ? 'good' : '');
   const imageLibraryURL = useImageLibraryURL();
@@ -124,7 +127,7 @@ function ImageField(props: {
               >
                 <ProgressCircle
                   size="small"
-                  aria-label="Checking…"
+                  aria-label={stringFormatter.format('checkingEllipsis')}
                   isIndeterminate
                 />
               </Flex>

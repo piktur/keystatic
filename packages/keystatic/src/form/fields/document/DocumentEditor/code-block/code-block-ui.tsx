@@ -12,6 +12,8 @@ import { Icon } from '@keystar/ui/icon';
 import { Flex } from '@keystar/ui/layout';
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip';
 import { Kbd, Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '#l10n';
 
 import { useDocumentEditorConfig, useToolbarState } from '../toolbar-state';
 import {
@@ -65,21 +67,27 @@ function CodeButton() {
   );
 }
 
-export const codeButton = (
-  <TooltipTrigger>
-    <CodeButton />
-    <Tooltip>
-      <Text>Code block</Text>
-      <Kbd>```</Kbd>
-    </Tooltip>
-  </TooltipTrigger>
-);
+function CodeButtonWithTooltip() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  return (
+    <TooltipTrigger>
+      <CodeButton />
+      <Tooltip>
+        <Text>{stringFormatter.format('codeBlock')}</Text>
+        <Kbd>```</Kbd>
+      </Tooltip>
+    </TooltipTrigger>
+  );
+}
+
+export const codeButton = <CodeButtonWithTooltip />;
 
 export function CodeElement({
   attributes,
   children,
   element,
 }: RenderElementProps & { element: { type: 'code' } }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages)
   const editor = useSlateStatic();
   const triggerRef = useRef(null);
   const [inputValue, setInputValue] = useState(
@@ -107,7 +115,7 @@ export function CodeElement({
           <BlockPopover>
             <Flex gap="regular" padding="regular">
               <Combobox
-                aria-label="Language"
+                aria-label={stringFormatter.format('language')}
                 width="scale.2000"
                 allowsCustomValue // allow consumers to support other languages
                 inputValue={inputValue}
@@ -143,7 +151,7 @@ export function CodeElement({
                   }
                   if (inputValue === '') {
                     Transforms.unsetNodes(editor, 'language', { at: path });
-                    setInputValue('Plain text');
+                    setInputValue(stringFormatter.format('plainText'));
                     return;
                   }
                   if (inputValue !== element.language) {

@@ -52,7 +52,7 @@ import {
 } from './branch-selection';
 import { FormForEntry, containerWidthForEntryLayout } from './entry-form';
 import { ForkRepoDialog } from './fork-repo';
-import l10nMessages from './l10n';
+import localizedMessages from '#l10n';
 import { NotFoundBoundary, notFound } from './not-found';
 import { getDataFileExtension, getPathPrefix } from './path-utils';
 import { useRouter } from './router';
@@ -567,7 +567,7 @@ function HeaderActions(props: {
     viewHref,
   } = props;
   const isBelowDesktop = useMediaQuery(breakpointQueries.below.desktop);
-  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const [deleteAlertIsOpen, setDeleteAlertOpen] = useState(false);
   const [duplicateAlertIsOpen, setDuplicateAlertOpen] = useState(false);
   const menuActions = useMemo(() => {
@@ -583,34 +583,34 @@ function HeaderActions(props: {
     let items: ActionType[] = [
       {
         key: 'reset',
-        label: 'Reset changes', // TODO: l10n
+        label: stringFormatter.format('resetChanges'),
         icon: historyIcon,
       },
       {
         key: 'delete',
-        label: 'Delete entry…', // TODO: l10n
+        label: stringFormatter.format('deleteEntryEllipsis'),
         icon: trash2Icon,
       },
       {
         key: 'copy',
-        label: 'Copy entry', // TODO: l10n
+        label: stringFormatter.format('copyEntry'),
         icon: clipboardCopyIcon,
       },
       {
         key: 'paste',
-        label: 'Paste entry', // TODO: l10n
+        label: stringFormatter.format('pasteEntry'),
         icon: clipboardPasteIcon,
       },
       {
         key: 'duplicate',
-        label: 'Duplicate entry…', // TODO: l10n
+        label: stringFormatter.format('duplicateEntryEllipsis'),
         icon: copyPlusIcon,
       },
     ];
     if (previewHref) {
       items.push({
         key: 'preview',
-        label: 'Preview',
+        label: stringFormatter.format('preview'),
         icon: externalLinkIcon,
         href: previewHref,
         target: '_blank',
@@ -620,7 +620,7 @@ function HeaderActions(props: {
     if (viewHref) {
       items.push({
         key: 'view',
-        label: 'View on GitHub',
+        label: stringFormatter.format('viewOnGitHub'),
         icon: githubIcon,
         href: viewHref,
         target: '_blank',
@@ -629,13 +629,13 @@ function HeaderActions(props: {
     }
 
     return items;
-  }, [previewHref, viewHref]);
+  }, [previewHref, viewHref, stringFormatter]);
 
   const indicatorElement = (() => {
     if (isLoading) {
       return (
         <ProgressCircle
-          aria-label="Saving changes"
+          aria-label={stringFormatter.format('savingChanges')}
           isIndeterminate
           size="small"
           alignSelf="center"
@@ -651,10 +651,10 @@ function HeaderActions(props: {
           width="scale.75"
           borderRadius="full"
         >
-          <Text visuallyHidden>Unsaved</Text>
+          <Text visuallyHidden>{stringFormatter.format('unsaved')}</Text>
         </Box>
       ) : (
-        <Badge tone="pending">Unsaved</Badge>
+        <Badge tone="pending">{stringFormatter.format('unsaved')}</Badge>
       );
     }
 
@@ -721,28 +721,28 @@ function HeaderActions(props: {
       <DialogContainer onDismiss={() => setDeleteAlertOpen(false)}>
         {deleteAlertIsOpen && (
           <AlertDialog
-            title="Delete entry"
+            title={stringFormatter.format('deleteEntryTitle')}
             tone="critical"
-            cancelLabel="Cancel"
-            primaryActionLabel="Yes, delete"
+            cancelLabel={stringFormatter.format('cancel')}
+            primaryActionLabel={stringFormatter.format('yesDelete')}
             autoFocusButton="cancel"
             onPrimaryAction={onDelete}
           >
-            Are you sure? This action cannot be undone.
+            {stringFormatter.format('deleteConfirmationBody')}
           </AlertDialog>
         )}
       </DialogContainer>
       <DialogContainer onDismiss={() => setDuplicateAlertOpen(false)}>
         {duplicateAlertIsOpen && (
           <AlertDialog
-            title="Save and duplicate entry"
+            title={stringFormatter.format('saveAndDuplicateEntryTitle')}
             tone="neutral"
-            cancelLabel="Cancel"
-            primaryActionLabel="Save and duplicate"
+            cancelLabel={stringFormatter.format('cancel')}
+            primaryActionLabel={stringFormatter.format('saveAndDuplicate')}
             autoFocusButton="primary"
             onPrimaryAction={onDuplicate}
           >
-            You have unsaved changes. Save this entry to duplicate it.
+            {stringFormatter.format('unsavedDuplicateBody')}
           </AlertDialog>
         )}
       </DialogContainer>
@@ -756,7 +756,7 @@ export function CreateBranchDuringUpdateDialog(props: {
   onDismiss: () => void;
   reason: string;
 }) {
-  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const repoInfo = useRepoInfo();
   const [branchName, setBranchName] = useState('');
   const [{ error, fetching, data }, createBranch] = useCreateBranchMutation();
@@ -820,14 +820,14 @@ export function CreateBranchDuringUpdateDialog(props: {
             <ProgressCircle
               isIndeterminate
               size="small"
-              aria-label="Creating Branch"
+              aria-label={stringFormatter.format('creatingBranch')}
             />
           )}
           <Button isDisabled={isLoading} onPress={props.onDismiss}>
             {stringFormatter.format('cancel')}
           </Button>
           <Button isDisabled={isLoading} prominence="high" type="submit">
-            Create branch and save
+            {stringFormatter.format('createBranchAndSave')}
           </Button>
         </ButtonGroup>
       </form>
@@ -843,6 +843,7 @@ type ItemPageWrapperProps = {
 };
 
 function ItemPageOuterWrapper(props: ItemPageWrapperProps) {
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const collectionConfig = props.config.collections?.[props.collection];
   if (!collectionConfig) notFound();
   const format = useMemo(
@@ -935,7 +936,9 @@ function ItemPageOuterWrapper(props: ItemPageWrapperProps) {
       fallback={
         <ItemPageShell {...props}>
           <PageBody>
-            <Notice tone="caution">Entry not found.</Notice>
+            <Notice tone="caution">
+              {stringFormatter.format('entryNotFound')}
+            </Notice>
           </PageBody>
         </ItemPageShell>
       }
@@ -958,7 +961,7 @@ function ItemPageOuterWrapper(props: ItemPageWrapperProps) {
                 minHeight="scale.3000"
               >
                 <ProgressCircle
-                  aria-label="Loading Item"
+                  aria-label={stringFormatter.format('loadingItem')}
                   isIndeterminate
                   size="large"
                 />

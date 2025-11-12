@@ -5,6 +5,7 @@ import { MenuTrigger, Menu } from '@keystar/ui/menu';
 import { css, tokenSchema } from '@keystar/ui/style';
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip';
 import { Item } from '@react-stately/collections';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
 import { Command, EditorState, Plugin } from 'prosemirror-state';
 import {
   addColumnAfter,
@@ -16,6 +17,7 @@ import { useEditorDispatchCommand, useEditorState } from '../editor-view';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { ResolvedPos } from 'prosemirror-model';
 import { createPortal } from 'react-dom';
+import localizedMessages from '#l10n';
 
 const cellActions: Record<string, { label: string; command: Command }> = {
   deleteRow: { label: 'Delete row', command: deleteRow },
@@ -25,6 +27,7 @@ const cellActions: Record<string, { label: string; command: Command }> = {
 };
 
 function CellMenu() {
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const runCommand = useEditorDispatchCommand();
   const gutter = tokenSchema.size.space.small;
   return (
@@ -40,7 +43,7 @@ function CellMenu() {
         <MenuTrigger align="end">
           <ActionButton
             prominence="low"
-            aria-label="Cell options"
+            aria-label={stringFormatter.format('cellOptions')}
             UNSAFE_className={css({
               borderRadius: tokenSchema.size.radius.small,
               height: 'auto',

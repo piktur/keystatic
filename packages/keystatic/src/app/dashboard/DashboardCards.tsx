@@ -4,6 +4,8 @@ import { Icon } from '@keystar/ui/icon';
 import { plusIcon } from '@keystar/ui/icon/icons/plusIcon';
 import { Divider, Flex } from '@keystar/ui/layout';
 import { Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '../l10n';
 
 import { ItemOrGroup, useNavItems } from '../useNavItems';
 import { pluralize } from '../pluralize';
@@ -15,6 +17,7 @@ import {
 } from './components';
 
 export function DashboardCards() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const navItems = useNavItems();
   const hasSections = navItems.some(item => 'children' in item);
   const items = navItems.map(item => renderItemOrGroup(item));
@@ -22,7 +25,7 @@ export function DashboardCards() {
   return hasSections ? (
     <>{items}</>
   ) : (
-    <DashboardSection title="Content">
+    <DashboardSection title={stringFormatter.format('content')}>
       <DashboardGrid>{items}</DashboardGrid>
     </DashboardSection>
   );
@@ -30,6 +33,8 @@ export function DashboardCards() {
 
 let dividerCount = 0;
 function renderItemOrGroup(itemOrGroup: ItemOrGroup) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+
   if (itemOrGroup.isDivider) {
     return (
       <Flex key={dividerCount++} gridColumn={FILL_COLS}>
@@ -65,7 +70,7 @@ function renderItemOrGroup(itemOrGroup: ItemOrGroup) {
         })}
       </Badge>
     ) : (
-      <Badge tone="accent">Changed</Badge>
+      <Badge tone="accent">{stringFormatter.format('changed')}</Badge>
     );
   })();
 
@@ -78,7 +83,7 @@ function renderItemOrGroup(itemOrGroup: ItemOrGroup) {
     return (
       <Flex gap="medium" alignItems="center">
         {changeElement}
-        <ActionButton aria-label="Add" href={`${itemOrGroup.href}/create`}>
+        <ActionButton aria-label={stringFormatter.format('add')} href={`${itemOrGroup.href}/create`}>
           <Icon src={plusIcon} />
         </ActionButton>
       </Flex>

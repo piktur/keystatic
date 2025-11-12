@@ -30,7 +30,7 @@ import {
   ArrayFieldListView,
   useArrayFieldValidationMessage,
 } from '../array/ui';
-import l10nMessages from '../../../app/l10n';
+import l10nMessages from '#l10n';
 import { createGetPreviewProps } from '../../preview-props';
 import { getInitialPropsValue } from '../../initial-values';
 

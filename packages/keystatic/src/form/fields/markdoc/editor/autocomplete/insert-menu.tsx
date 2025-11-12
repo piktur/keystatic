@@ -1,5 +1,6 @@
 import { Icon } from '@keystar/ui/icon';
 import { Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
 import { matchSorter } from 'match-sorter';
 import { NodeType } from 'prosemirror-model';
 import { Command, EditorState } from 'prosemirror-state';
@@ -22,6 +23,7 @@ import { InputRule } from '../inputrules/inputrules';
 import { useEditorKeydownListener } from '../keydown';
 import { EditorAutocomplete } from './autocomplete';
 import { EditorSchema } from '../schema';
+import localizedMessages from '#l10n';
 
 export type InsertMenuItemSpec = {
   label: string;
@@ -89,6 +91,7 @@ export function itemRenderer(item: InsertMenuItem) {
 }
 
 function InsertMenu(props: { query: string; from: number; to: number }) {
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const viewRef = useEditorViewRef();
   const dispatchCommand = useEditorDispatchCommand();
   const schema = useEditorSchema();
@@ -117,7 +120,7 @@ function InsertMenu(props: { query: string; from: number; to: number }) {
     <EditorAutocomplete
       from={props.from}
       to={props.to}
-      aria-label="Insert menu"
+      aria-label={stringFormatter.format('insertMenu')}
       items={options}
       children={itemRenderer}
       onEscape={() => {

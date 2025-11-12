@@ -1,0 +1,52 @@
+# pre-commit:
+#   piped: true
+#   skip:
+#     - merge
+#     - rebase
+#   commands:
+#     format:
+#       priority: 2
+#       run: 'pnpm prettier --write --ignore-unknown {staged_files}'
+#       stage_fixed: true
+#     'format:shell':
+#       priority: 2
+#       skip:
+#         - '! command -v shfmt > /dev/null 2>&1'
+#       glob: '**/*.{sh,zsh}'
+#       run: 'shfmt --indent 2 --case-indent --space-redirects --write {staged_files}'
+#       stage_fixed: true
+#     lint:
+#       run: 'pnpm run lint'
+#       priority: 3
+#       stage_fixed: true
+#     'lint:shell':
+#       priority: 2
+#       glob: '**/*.{sh,zsh}'
+#       skip:
+#         - '! command -v shellcheck > /dev/null 2>&1'
+#       run: 'shellcheck --external-sources -S error -e SC1071 {staged_files}'
+#     tsc-check:
+#       priority: 5
+#       run: 'pnpm run check:types'
+#       stage_fixed: true
+#     test:
+#       run: 'pnpm run test'
+#       priority: 6
+pre-push:
+  parallel: true
+  commands:
+    audit:
+      priority: 1
+      tags: security
+      run: pnpm audit --audit-level high
+prepare-commit-msg:
+  parallel: true
+  skip:
+    - run: 'test "$GIT_COMMITTER_NAME" != "${GIT_COMMITTER_NAME%%(aider)}"'
+  commands:
+    generate-message:
+      run: $DEV_HOME/piktur/dotfiles/ai/bin/commit-message.sh -o .git/COMMIT_EDITMSG
+      skip:
+        - merge
+        - rebase
+no_tty: true

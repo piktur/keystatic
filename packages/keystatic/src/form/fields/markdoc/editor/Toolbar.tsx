@@ -37,6 +37,8 @@ import { Picker, Item } from '@keystar/ui/picker';
 import { breakpointQueries, css, tokenSchema } from '@keystar/ui/style';
 import { Tooltip, TooltipTrigger } from '@keystar/ui/tooltip';
 import { Text, Kbd } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '#l10n';
 
 import {
   useEditorDispatchCommand,
@@ -85,6 +87,7 @@ export function ToolbarButton(props: {
 }
 
 function LinkButton(props: { link: MarkType }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const [text, setText] = useState<null | string>(null);
   const runCommand = useEditorDispatchCommand();
   const viewRef = useEditorViewRef();
@@ -106,7 +109,7 @@ function LinkButton(props: { link: MarkType }) {
       <>
         <TooltipTrigger>
           <ToolbarButton
-            aria-label="Divider"
+            aria-label={stringFormatter.format('link')}
             command={(state, dispatch) => {
               const aroundFrom = markAround(state.selection.$from, props.link);
               const aroundTo = markAround(state.selection.$to, props.link);
@@ -142,7 +145,7 @@ function LinkButton(props: { link: MarkType }) {
             <Icon src={linkIcon} />
           </ToolbarButton>
           <Tooltip>
-            <Text>Link</Text>
+            <Text>{stringFormatter.format('link')}</Text>
             <Kbd meta>K</Kbd>
           </Tooltip>
         </TooltipTrigger>
@@ -171,30 +174,31 @@ function LinkButton(props: { link: MarkType }) {
 export const Toolbar = memo(function Toolbar(
   props: HTMLAttributes<HTMLDivElement>
 ) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const schema = useEditorSchema();
   const { nodes, marks } = schema;
   return (
     <ToolbarWrapper {...props}>
       <ToolbarScrollArea>
         {nodes.heading && <HeadingMenu headingType={nodes.heading} />}
-        <EditorToolbar aria-label="Formatting options">
+        <EditorToolbar aria-label={stringFormatter.format('formattingOptions')}>
           <EditorToolbarSeparator />
           <InlineMarks />
           <EditorToolbarSeparator />
           <ListButtons />
           <EditorToolbarSeparator />
-          <EditorToolbarGroup aria-label="Blocks">
+          <EditorToolbarGroup aria-label={stringFormatter.format('blocks')}>
             {nodes.divider && (
               <TooltipTrigger>
                 <ToolbarButton
-                  aria-label="Divider"
+                  aria-label={stringFormatter.format('divider')}
                   command={insertNode(nodes.divider)}
                   isSelected={typeInSelection(nodes.divider)}
                 >
                   <Icon src={minusIcon} />
                 </ToolbarButton>
                 <Tooltip>
-                  <Text>Divider</Text>
+                  <Text>{stringFormatter.format('divider')}</Text>
                   <Kbd>---</Kbd>
                 </Tooltip>
               </TooltipTrigger>
@@ -203,7 +207,7 @@ export const Toolbar = memo(function Toolbar(
             {nodes.blockquote && (
               <TooltipTrigger>
                 <ToolbarButton
-                  aria-label="Quote"
+                  aria-label={stringFormatter.format('quote')}
                   command={(state, dispatch) => {
                     const hasQuote = typeInSelection(nodes.blockquote!)(state);
                     if (hasQuote) {
@@ -228,7 +232,7 @@ export const Toolbar = memo(function Toolbar(
                   <Icon src={quoteIcon} />
                 </ToolbarButton>
                 <Tooltip>
-                  <Text>Quote</Text>
+                  <Text>{stringFormatter.format('quote')}</Text>
                   <Kbd>{'>⎵'}</Kbd>
                 </Tooltip>
               </TooltipTrigger>
@@ -236,14 +240,14 @@ export const Toolbar = memo(function Toolbar(
             {nodes.code_block && (
               <TooltipTrigger>
                 <ToolbarButton
-                  aria-label="Code block"
+                  aria-label={stringFormatter.format('codeBlock')}
                   command={toggleCodeBlock(nodes.code_block, nodes.paragraph)}
                   isSelected={typeInSelection(nodes.code_block)}
                 >
                   <Icon src={codeIcon} />
                 </ToolbarButton>
                 <Tooltip>
-                  <Text>Code block</Text>
+                  <Text>{stringFormatter.format('codeBlock')}</Text>
                   <Kbd>```</Kbd>
                 </Tooltip>
               </TooltipTrigger>
@@ -251,13 +255,13 @@ export const Toolbar = memo(function Toolbar(
             {nodes.table && (
               <TooltipTrigger>
                 <ToolbarButton
-                  aria-label="Table"
+                  aria-label={stringFormatter.format('table')}
                   command={insertTable(nodes.table)}
                 >
                   <Icon src={tableIcon} />
                 </ToolbarButton>
                 <Tooltip>
-                  <Text>Table</Text>
+                  <Text>{stringFormatter.format('table')}</Text>
                 </Tooltip>
               </TooltipTrigger>
             )}
@@ -517,6 +521,7 @@ const isMarkActive = (markType: MarkType) => (state: EditorState) => {
 };
 
 function InlineMarks() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const state = useEditorState();
   const schema = useEditorSchema();
   const runCommand = useEditorDispatchCommand();
@@ -599,7 +604,7 @@ function InlineMarks() {
   return useMemo(() => {
     return (
       <EditorToolbarGroup
-        aria-label="Text formatting"
+        aria-label={stringFormatter.format('textFormatting')}
         value={selectedKeys}
         onChange={key => {
           const mark = inlineMarks.find(mark => mark.key === key);
@@ -645,6 +650,7 @@ function getActiveListType(state: EditorState, schema: EditorSchema) {
 }
 
 function ListButtons() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const state = useEditorState();
   const schema = useEditorSchema();
   const dispatchCommand = useEditorDispatchCommand();
@@ -687,7 +693,7 @@ function ListButtons() {
 
     return (
       <EditorToolbarGroup
-        aria-label="Lists"
+        aria-label={stringFormatter.format('lists')}
         value={activeListType}
         onChange={key => {
           const format = key as 'ordered_list' | 'unordered_list';

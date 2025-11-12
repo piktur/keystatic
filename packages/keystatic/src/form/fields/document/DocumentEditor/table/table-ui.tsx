@@ -24,6 +24,8 @@ import { Item, Menu, MenuTrigger } from '@keystar/ui/menu';
 import { css, toDataAttributes, tokenSchema } from '@keystar/ui/style';
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip';
 import { Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '#l10n';
 
 import {
   BlockPopover,
@@ -729,14 +731,19 @@ const TableButton = () => {
     [editor, isDisabled, isSelected]
   );
 };
-export const tableButton = (
-  <TooltipTrigger>
-    <TableButton />
-    <Tooltip>
-      <Text>Table</Text>
-    </Tooltip>
-  </TooltipTrigger>
-);
+function TableButtonWithTooltip() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  return (
+    <TooltipTrigger>
+      <TableButton />
+      <Tooltip>
+        <Text>{stringFormatter.format('table')}</Text>
+      </Tooltip>
+    </TooltipTrigger>
+  );
+}
+
+export const tableButton = <TableButtonWithTooltip />;
 
 export function getCellPathInDirection(
   editor: Editor,

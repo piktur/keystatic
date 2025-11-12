@@ -1,5 +1,7 @@
 import { ProgressCircle } from '@keystar/ui/progress';
 import { Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from './l10n';
 import { useEffect, useMemo, useState } from 'react';
 import * as s from 'superstruct';
 import { Config } from '../config';
@@ -19,6 +21,7 @@ const tokenResponseSchema = s.type({
 });
 
 export function KeystaticCloudAuthCallback({ config }: { config: Config }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const router = useRouter();
   const url = new URL(window.location.href);
   const code = url.searchParams.get('code');
@@ -77,13 +80,13 @@ export function KeystaticCloudAuthCallback({ config }: { config: Config }) {
     }
   }, [code, state, router, storedState, config]);
   if (!config.cloud?.project) {
-    return <Text>Missing Keystatic Cloud config</Text>;
+    return <Text>{stringFormatter.format('missingCloudConfig')}</Text>;
   }
   if (!code || !state) {
-    return <Text>Missing code or state</Text>;
+    return <Text>{stringFormatter.format('missingCodeOrState')}</Text>;
   }
   if (!storedState || state !== storedState.state) {
-    return <Text>Invalid state</Text>;
+    return <Text>{stringFormatter.format('invalidState')}</Text>;
   }
 
   if (error) {
@@ -94,7 +97,7 @@ export function KeystaticCloudAuthCallback({ config }: { config: Config }) {
       <ProgressCircle
         size="large"
         isIndeterminate
-        aria-label="Authenticating"
+        aria-label={stringFormatter.format('authenticating')}
       />
     </Flex>
   );

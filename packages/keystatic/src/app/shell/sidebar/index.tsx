@@ -37,7 +37,7 @@ import { pluralize } from '../../pluralize';
 
 import { useBrand } from '../common';
 import { SIDE_PANEL_ID } from '../constants';
-import { GitMenu, ThemeMenu, UserActions } from './components';
+import { GitMenu, UserActions, PreferencesMenu } from './components';
 import { BranchPicker } from '../../branch-selection';
 import { useAppState, useConfig } from '../context';
 
@@ -119,7 +119,7 @@ function SidebarHeader() {
           {brandName}
         </Text>
       </HStack>
-      {isLocalNoCloud && <ThemeMenu />}
+      {isLocalNoCloud && <PreferencesMenu />}
     </HStack>
   );
 }
@@ -139,7 +139,7 @@ function SidebarFooter() {
       gap="regular"
     >
       <UserActions />
-      <ThemeMenu />
+      <PreferencesMenu />
     </HStack>
   );
 }
@@ -285,6 +285,7 @@ function useIsCurrent() {
 // ----------------------------------------------------------------------------
 function NavItemOrGroup({ itemOrGroup }: { itemOrGroup: ItemOrGroup }) {
   const isCurrent = useIsCurrent();
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   if (itemOrGroup.isDivider) {
     return <Divider />;
   }
@@ -319,7 +320,7 @@ function NavItemOrGroup({ itemOrGroup }: { itemOrGroup: ItemOrGroup }) {
       <StatusLight
         tone="accent"
         marginStart="auto"
-        aria-label="Changed"
+        aria-label={stringFormatter.format('changed')}
         role="status"
       />
     );

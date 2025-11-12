@@ -7,6 +7,8 @@ import { quoteIcon } from '@keystar/ui/icon/icons/quoteIcon';
 import { Icon } from '@keystar/ui/icon';
 import { TooltipTrigger, Tooltip } from '@keystar/ui/tooltip';
 import { Kbd, Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '#l10n';
 
 import { useToolbarState } from '../toolbar-state';
 import { isElementActive } from '../utils';
@@ -54,12 +56,17 @@ const BlockquoteButton = () => {
     [editor, isDisabled, isSelected]
   );
 };
-export const blockquoteButton = (
-  <TooltipTrigger>
-    <BlockquoteButton />
-    <Tooltip>
-      <Text>Quote</Text>
-      <Kbd>{'>⎵'}</Kbd>
-    </Tooltip>
-  </TooltipTrigger>
-);
+function BlockquoteButtonWithTooltip() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  return (
+    <TooltipTrigger>
+      <BlockquoteButton />
+      <Tooltip>
+        <Text>{stringFormatter.format('quote')}</Text>
+        <Kbd>{'>⎵'}</Kbd>
+      </Tooltip>
+    </TooltipTrigger>
+  );
+}
+
+export const blockquoteButton = <BlockquoteButtonWithTooltip />;

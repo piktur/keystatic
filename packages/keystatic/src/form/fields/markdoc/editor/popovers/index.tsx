@@ -2,6 +2,7 @@ import { Mark, MarkType, Node, ResolvedPos } from 'prosemirror-model';
 import { EditorState, NodeSelection, TextSelection } from 'prosemirror-state';
 import { toggleHeader } from 'prosemirror-tables';
 import { ReactElement, useMemo, useState } from 'react';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
 
 import { ActionButton } from '@keystar/ui/button';
 import { EditorPopover, EditorPopoverProps } from '@keystar/ui/editor';
@@ -23,6 +24,7 @@ import { ImagePopover } from './images';
 import { Dialog, DialogContainer } from '@keystar/ui/dialog';
 import { FormValue } from '../FormValue';
 import { Heading } from '@keystar/ui/typography';
+import localizedMessages from '#l10n';
 import { pencilIcon } from '@keystar/ui/icon/icons/pencilIcon';
 import { ComponentSchema } from '../../../../api';
 import { toSerialized, useDeserializedValue } from '../props-serialization';
@@ -105,13 +107,14 @@ const popoverComponents: Record<
   NodePopoverRenderer & { shouldShow?(schema: EditorSchema): boolean }
 > = {
   code_block: function CodeBlockPopover(props) {
+    const stringFormatter = useLocalizedStringFormatter(localizedMessages);
     const dispatchCommand = useEditorDispatchCommand();
     const schema = useEditorSchema();
     const viewRef = useEditorViewRef();
     return (
       <Flex gap="regular" padding="regular">
         <TextField
-          aria-label="Code block language"
+          aria-label={stringFormatter.format('codeBlockLanguage')}
           value={props.node.attrs.language}
           onChange={val => {
             const view = viewRef.current!;
