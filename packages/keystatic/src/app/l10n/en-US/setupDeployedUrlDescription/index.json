@@ -1,0 +1,6 @@
+{
+  "key": "setupDeployedUrlDescription",
+  "value": "This should be the root of your domain. If you're not sure where Keystatic will be deployed, leave this blank and you can update the GitHub app later.",
+  "notes": "Helper text for the deployed app URL field.",
+  "type": "global"
+}

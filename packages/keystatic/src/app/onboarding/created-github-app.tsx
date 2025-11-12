@@ -1,10 +1,14 @@
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import { interpolateMessage } from '../l10n/interpolate';
 import { Flex } from '@keystar/ui/layout';
 import { Heading, Text } from '@keystar/ui/typography';
 import { GitHubConfig } from '../..';
 import { InstallGitHubApp } from './install-app';
 import { serializeRepoConfig } from '../repo-config';
+import l10nMessages from '../l10n';
 
 export function CreatedGitHubApp(props: { config: GitHubConfig }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   return (
     <Flex alignItems="center" justifyContent="center" margin="xxlarge">
       <Flex
@@ -17,15 +21,15 @@ export function CreatedGitHubApp(props: { config: GitHubConfig }) {
         gap="xlarge"
         maxWidth="scale.4600"
       >
-        <Heading>You've installed Keystatic! 🎉</Heading>
+        <Heading>
+          {stringFormatter.format('createdGitHubAppHeading')}
+        </Heading>
+        <Text>{stringFormatter.format('createdGitHubAppDescription')}</Text>
         <Text>
-          To start using Keystatic, you need to install the GitHub app you've
-          created.
-        </Text>
-        <Text>
-          Make sure to add the App to the{' '}
-          <code>{serializeRepoConfig(props.config.storage.repo)}</code>{' '}
-          repository.
+          {interpolateMessage(
+            stringFormatter.format('createdGitHubAppRepo'),
+            { repo: <code>{serializeRepoConfig(props.config.storage.repo)}</code> }
+          )}
         </Text>
         <InstallGitHubApp config={props.config} />
       </Flex>

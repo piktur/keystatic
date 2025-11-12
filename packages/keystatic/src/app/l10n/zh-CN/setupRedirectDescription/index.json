@@ -1,0 +1,6 @@
+{
+  "key": "setupRedirectDescription",
+  "value": "访问 GitHub 创建应用后，您将被重定向回此处，GitHub 生成的密钥将写入您的 {envFile} 文件。",
+  "notes": "Description shown for the redirect flow. {envFile} will be replaced with the .env code element.",
+  "type": "global"
+}

@@ -1,0 +1,6 @@
+{
+  "key": "installGitHubAppGenericWarning",
+  "value": "请在 GitHub 中找到该应用并手动将仓库加入。",
+  "notes": "Fallback warning when no slug is available in any context.",
+  "type": "global"
+}

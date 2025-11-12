@@ -1,0 +1,6 @@
+{
+  "key": "forkRepoInstallInstruction",
+  "value": "Then, come back to this page and {installLink}.",
+  "notes": "Instruction to install the app. {installLink} will be replaced with a link to install the Keystatic GitHub App.",
+  "type": "global"
+}

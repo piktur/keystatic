@@ -1,4 +1,5 @@
 import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import { interpolateMessage } from './l10n/interpolate';
 import { isHotkey } from 'is-hotkey';
 import React, {
   useCallback,
@@ -261,15 +262,20 @@ function CollectionPageContent(props: CollectionPageContentProps) {
         title={stringFormatter.format('emptyCollectionTitle')}
         message={
           <>
-            {stringFormatter.format('emptyCollectionMessagePrefix')}{' '}
-            <TextLink
-              href={`${props.basePath}/collection/${encodeURIComponent(
-                props.collection
-              )}/create`}
-            >
-              {stringFormatter.format('createFirstEntry')}
-            </TextLink>{' '}
-            {stringFormatter.format('emptyCollectionMessageSuffix')}
+            {interpolateMessage(
+              stringFormatter.format('emptyCollectionMessage'),
+              {
+                createLink: (
+                  <TextLink
+                    href={`${props.basePath}/collection/${encodeURIComponent(
+                      props.collection
+                    )}/create`}
+                  >
+                    {stringFormatter.format('createFirstEntry')}
+                  </TextLink>
+                ),
+              }
+            )}
           </>
         }
       />
@@ -511,9 +517,13 @@ function CollectionTable(
         <EmptyState
           icon={searchXIcon}
           title={stringFormatter.format('noResultsTitle')}
-          message={stringFormatter.format('noResultsMessage', {
-            query: searchTerm,
-          })}
+          message={
+            searchTerm.trim()
+              ? stringFormatter.format('noResultsMessage', {
+                  query: searchTerm.trim(),
+                })
+              : stringFormatter.format('noItemsFound')
+          }
         />
       )}
       flex

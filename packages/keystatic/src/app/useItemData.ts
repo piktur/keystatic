@@ -380,7 +380,7 @@ export function fetchBlob(
     }
     return (
       isLocal
-        ? fetch(`${('/api' + ((typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic'))}/blob/${oid}/${filepath}`, {
+        ? fetch(`${('/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic'))}/blob/${oid}/${filepath}`, {
             headers: { 'no-cors': '1' },
           })
         : fetchGitHubBlob(config, oid, filepath, commitSha, repoInfo)

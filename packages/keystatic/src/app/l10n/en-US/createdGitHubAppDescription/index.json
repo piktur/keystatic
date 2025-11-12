@@ -1,0 +1,6 @@
+{
+  "key": "createdGitHubAppDescription",
+  "value": "To start using Keystatic, you need to install the GitHub app you've created.",
+  "notes": "Description explaining that the GitHub app must also be installed.",
+  "type": "global"
+}

@@ -58,12 +58,14 @@ import { clipboardPasteIcon } from '@keystar/ui/icon/icons/clipboardPasteIcon';
 import { ActionGroup, Item } from '@keystar/ui/action-group';
 import { Text } from '@keystar/ui/typography';
 import { breakpointQueries, useMediaQuery } from '@keystar/ui/style';
+import { useFilteredCollectionActions } from './actions/useCollectionActions';
 
 function CreateItemWrapper(props: {
   collection: string;
   config: Config;
   basePath: string;
 }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const router = useRouter();
   const duplicateSlug = useMemo(() => {
     const url = new URL(router.href, 'http://localhost');
@@ -207,7 +209,7 @@ function CreateItemWrapper(props: {
     return (
       <Flex alignItems="center" justifyContent="center" minHeight="scale.3000">
         <ProgressCircle
-          aria-label="Loading Item"
+          aria-label={stringFormatter.format('loadingItem')}
           isIndeterminate
           size="large"
         />
@@ -221,7 +223,7 @@ function CreateItemWrapper(props: {
   ) {
     return (
       <PageBody>
-        <Notice tone="caution">Entry not found.</Notice>
+        <Notice tone="caution">{stringFormatter.format('entryNotFound')}</Notice>
       </PageBody>
     );
   }
@@ -513,7 +515,7 @@ function CreateItemInner(props: {
           <PresenceAvatars />
           {isLoading && (
             <ProgressCircle
-              aria-label="Creating entry"
+              aria-label={stringFormatter.format('creatingEntry')}
               isIndeterminate
               size="small"
             />
@@ -596,7 +598,7 @@ function CreateItemInner(props: {
             branchOid={baseCommit}
             onCreate={async newBranch => {
               {
-                const __ksBase = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
+                const __ksBase = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
                 router.push(
                   `${__ksBase}/branch/${encodeURIComponent(
                     newBranch
@@ -609,7 +611,7 @@ function CreateItemInner(props: {
                 const slug = getSlugFromState(collectionConfig, props.state);
 
                 {
-                  const __ksBase = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
+                  const __ksBase = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
                   router.push(
                     `${__ksBase}/branch/${encodeURIComponent(
                       newBranch

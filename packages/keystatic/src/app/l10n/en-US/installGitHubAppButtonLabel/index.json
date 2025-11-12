@@ -1,0 +1,6 @@
+{
+  "key": "installGitHubAppButtonLabel",
+  "value": "Install GitHub App",
+  "notes": "Primary button that links to the GitHub App installation page.",
+  "type": "global"
+}

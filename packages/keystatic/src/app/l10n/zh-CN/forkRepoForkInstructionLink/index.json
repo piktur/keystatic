@@ -1,0 +1,6 @@
+{
+  "key": "forkRepoForkInstructionLink",
+  "value": "在 GitHub 上派生此仓库",
+  "notes": "Link text that sends the user to GitHub to fork the repo.",
+  "type": "global"
+}

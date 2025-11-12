@@ -1,0 +1,6 @@
+{
+  "key": "installGitHubAppMissingSlug",
+  "value": "The {envName} environment variable wasn't provided so we can't link to the GitHub app installation page. You should find the app on GitHub and add the repo yourself.",
+  "notes": "Warning shown when the app slug environment variable is missing. {envName} will be replaced with the environment variable name code element.",
+  "type": "global"
+}

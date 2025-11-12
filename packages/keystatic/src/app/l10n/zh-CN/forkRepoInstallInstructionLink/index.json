@@ -1,0 +1,6 @@
+{
+  "key": "forkRepoInstallInstructionLink",
+  "value": "在你的派生仓库上安装 Keystatic GitHub 应用",
+  "notes": "Link text that installs the Keystatic GitHub App on the forked repo.",
+  "type": "global"
+}

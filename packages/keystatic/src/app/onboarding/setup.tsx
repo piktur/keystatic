@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import { interpolateMessage } from '../l10n/interpolate';
 import { Button } from '@keystar/ui/button';
 import { Box, Flex } from '@keystar/ui/layout';
 import { css } from '@keystar/ui/style';
@@ -7,11 +9,13 @@ import { TextField } from '@keystar/ui/text-field';
 import { Heading, Text } from '@keystar/ui/typography';
 import { GitHubConfig } from '../..';
 import { parseRepoConfig } from '../repo-config';
+import l10nMessages from '../l10n';
 
 export function KeystaticSetup(props: { config: GitHubConfig }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const [deployedURL, setDeployedURL] = useState('');
   const [organization, setOrganization] = useState('');
-  const basePath = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
+  const basePath = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
 
   return (
     <Flex alignItems="center" justifyContent="center" margin="xxlarge">
@@ -31,44 +35,43 @@ export function KeystaticSetup(props: { config: GitHubConfig }) {
         method="post"
       >
         <Flex justifyContent="center">
-          <Heading>Keystatic Setup</Heading>
+          <Heading>{stringFormatter.format('setupHeading')}</Heading>
         </Flex>
-        <Text>Keystatic doesn't have the required config.</Text>
-        <Text>
-          If you've already created your GitHub app, make sure to add the
-          following environment variables:
-        </Text>
+        <Text>{stringFormatter.format('setupMissingConfig')}</Text>
+        <Text>{stringFormatter.format('setupEnvInstructions')}</Text>
         <Box elementType="ul">
           <li>
+            {/* eslint-disable-next-line react/jsx-no-literals */}
             <code>KEYSTATIC_GITHUB_CLIENT_ID</code>
           </li>
           <li>
+            {/* eslint-disable-next-line react/jsx-no-literals */}
             <code>KEYSTATIC_GITHUB_CLIENT_SECRET</code>
           </li>
           <li>
+            {/* eslint-disable-next-line react/jsx-no-literals */}
             <code>KEYSTATIC_SECRET</code>
           </li>
         </Box>
-        <Text>
-          If you haven't created your GitHub app for Keystatic, you can create
-          one below.
-        </Text>
+        <Text>{stringFormatter.format('setupCreateAppIntro')}</Text>
         <TextField
-          label="Deployed App URL"
-          description="This should the root of your domain. If you're not sure where Keystatic will be deployed, leave this blank and you can update the GitHub app later."
+          label={stringFormatter.format('setupDeployedUrlLabel')}
+          description={stringFormatter.format('setupDeployedUrlDescription')}
           value={deployedURL}
           onChange={setDeployedURL}
         />
         <TextField
-          label="GitHub organization (if any)"
-          description="You must be an owner or GitHub App manager in the organization to create the GitHub App. Leave this blank to create the app in your personal account."
+          label={stringFormatter.format('setupOrganizationLabel')}
+          description={stringFormatter.format('setupOrganizationDescription')}
           value={organization}
           onChange={setOrganization}
         />
         <Text>
-          After visiting GitHub to create the GitHub app, you'll be redirected
-          back here and secrets generated from GitHub will be written to your{' '}
-          <code>.env</code> file.
+          {interpolateMessage(
+            stringFormatter.format('setupRedirectDescription'),
+            // eslint-disable-next-line react/jsx-no-literals
+            { envFile: <code>.env</code> }
+          )}
         </Text>
         <input
           type="text"
@@ -101,7 +104,7 @@ export function KeystaticSetup(props: { config: GitHubConfig }) {
           })}
         />
         <Button prominence="high" type="submit">
-          Create GitHub App
+          {stringFormatter.format('setupButtonLabel')}
         </Button>
       </Flex>
     </Flex>

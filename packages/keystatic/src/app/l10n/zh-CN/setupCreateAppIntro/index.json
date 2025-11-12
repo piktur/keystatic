@@ -1,0 +1,6 @@
+{
+  "key": "setupCreateAppIntro",
+  "value": "如果你尚未为 Keystatic 创建 GitHub 应用，可以在下方创建。",
+  "notes": "Explains that the app can be created via the form.",
+  "type": "global"
+}

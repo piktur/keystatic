@@ -1,0 +1,6 @@
+{
+  "key": "noResultsMessage",
+  "value": "No items matching \"{query}\" were found.",
+  "notes": "",
+  "type": "collection-list"
+}

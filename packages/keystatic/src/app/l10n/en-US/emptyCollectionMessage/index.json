@@ -1,0 +1,6 @@
+{
+  "key": "emptyCollectionMessage",
+  "value": "There aren't any entries yet. {createLink} to see it here.",
+  "notes": "{createLink} will be replaced with a link to create the first entry.",
+  "type": "collection-list"
+}

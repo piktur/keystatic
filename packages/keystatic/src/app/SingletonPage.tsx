@@ -1,3 +1,5 @@
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import localizedMessages from '#l10n';
 import { useRouter } from './router';
 import {
   FormEvent,
@@ -85,6 +87,7 @@ function SingletonPageInner(
     previewProps: GenericPreviewProps<ComponentSchema, undefined>;
   }
 ) {
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const isBelowDesktop = useMediaQuery(breakpointQueries.below.desktop);
   const repoInfo = useRepoInfo();
   const currentBranch = useCurrentBranch();
@@ -129,24 +132,24 @@ function SingletonPageInner(
     }[] = [
       {
         key: 'reset',
-        label: 'Reset',
+        label: stringFormatter.format('reset'),
         icon: historyIcon,
       },
       {
         key: 'copy',
-        label: 'Copy entry',
+        label: stringFormatter.format('copyEntry'),
         icon: clipboardCopyIcon,
       },
       {
         key: 'paste',
-        label: 'Paste entry',
+        label: stringFormatter.format('pasteEntry'),
         icon: clipboardPasteIcon,
       },
     ];
     if (previewHref) {
       actions.push({
         key: 'preview',
-        label: 'Preview',
+        label: stringFormatter.format('preview'),
         icon: externalLinkIcon,
         href: previewHref,
         target: '_blank',
@@ -156,7 +159,7 @@ function SingletonPageInner(
     if (viewHref) {
       actions.push({
         key: 'view',
-        label: 'View on GitHub',
+        label: stringFormatter.format('viewOnGitHub'),
         icon: githubIcon,
         href: viewHref,
         target: '_blank',
@@ -164,7 +167,7 @@ function SingletonPageInner(
       });
     }
     return actions;
-  }, [previewHref, viewHref]);
+  }, [previewHref, stringFormatter, viewHref]);
 
   const formID = 'singleton-form';
 
@@ -198,9 +201,9 @@ function SingletonPageInner(
     );
     if (entry) {
       setValueToPreviewProps(entry, props.previewProps);
-      toastQueue.positive('Entry pasted', {
+      toastQueue.positive(stringFormatter.format('entryPasted'), {
         shouldCloseOnAction: true,
-        actionLabel: 'Undo',
+        actionLabel: stringFormatter.format('undo'),
         onAction: () => {
           setValueToPreviewProps(props.state, props.previewProps);
         },
@@ -217,13 +220,19 @@ function SingletonPageInner(
           </Heading>
           {props.updateResult.kind === 'loading' ? (
             <ProgressCircle
-              aria-label={`Updating ${singletonConfig.label}`}
+              aria-label={stringFormatter.format('updatingEntry', {
+                name: singletonConfig.label,
+              })}
               isIndeterminate
               size="small"
               alignSelf="center"
             />
           ) : (
-            props.hasChanged && <Badge tone="pending">Unsaved</Badge>
+            props.hasChanged && (
+              <Badge tone="pending">
+                {stringFormatter.format('unsaved')}
+              </Badge>
+            )
           )}
         </Flex>
         <PresenceAvatars />
@@ -304,7 +313,7 @@ function SingletonPageInner(
             <CreateBranchDuringUpdateDialog
               branchOid={baseCommit}
               onCreate={async newBranch => {
-                const __ksBase = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
+                const __ksBase = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
                 router.push(
                   `${__ksBase}/branch/${encodeURIComponent(
                     newBranch

@@ -1,0 +1,6 @@
+{
+  "key": "installGitHubAppCopyLabel",
+  "value": "Copy repo name",
+  "notes": "Button label that copies the repo name.",
+  "type": "global"
+}

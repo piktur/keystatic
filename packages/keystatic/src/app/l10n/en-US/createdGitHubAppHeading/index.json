@@ -1,0 +1,6 @@
+{
+  "key": "createdGitHubAppHeading",
+  "value": "You've installed Keystatic! 🎉",
+  "notes": "Heading on the onboarding card shown after the GitHub app is created.",
+  "type": "global"
+}

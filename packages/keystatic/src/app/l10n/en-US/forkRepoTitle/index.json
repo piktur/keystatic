@@ -1,0 +1,6 @@
+{
+  "key": "forkRepoTitle",
+  "value": "Fork Repo",
+  "notes": "Heading for the dialog that helps users fork the repo.",
+  "type": "global"
+}

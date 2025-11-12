@@ -1,3 +1,5 @@
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import { interpolateMessage } from '../l10n/interpolate';
 import { ActionButton, Button } from '@keystar/ui/button';
 import { Flex } from '@keystar/ui/layout';
 import { Notice } from '@keystar/ui/notice';
@@ -7,6 +9,7 @@ import { useRouter } from '../router';
 import { GitHubConfig } from '../../config';
 import { createContext, useContext } from 'react';
 import { parseRepoConfig } from '../repo-config';
+import l10nMessages from '../l10n';
 
 export const AppSlugContext = createContext<
   { envName: string; value: string | undefined } | undefined
@@ -15,6 +18,7 @@ export const AppSlugContext = createContext<
 export const AppSlugProvider = AppSlugContext.Provider;
 
 export function InstallGitHubApp(props: { config: GitHubConfig }) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const router = useRouter();
   const appSlugFromContext = useContext(AppSlugContext);
   const appSlug =
@@ -25,7 +29,7 @@ export function InstallGitHubApp(props: { config: GitHubConfig }) {
     <Flex direction="column" gap="regular">
       <Flex alignItems="end" gap="regular">
         <TextField
-          label="Repo Name"
+          label={stringFormatter.format('installGitHubAppRepoLabel')}
           width="100%"
           isReadOnly
           value={parsedRepo.name}
@@ -35,7 +39,7 @@ export function InstallGitHubApp(props: { config: GitHubConfig }) {
             navigator.clipboard.writeText(parsedRepo.name);
           }}
         >
-          Copy Repo Name
+          {stringFormatter.format('installGitHubAppCopyLabel')}
         </ActionButton>
       </Flex>
       {appSlug ? (
@@ -43,18 +47,21 @@ export function InstallGitHubApp(props: { config: GitHubConfig }) {
           prominence="high"
           href={`https://github.com/apps/${appSlug}/installations/new`}
         >
-          Install GitHub App
+          {stringFormatter.format('installGitHubAppButtonLabel')}
         </Button>
       ) : (
         <Notice tone="caution">
           {appSlugFromContext ? (
             <Text>
-              The <code>{appSlugFromContext.envName}</code> environment variable
-              wasn't provided so we can't link to the GitHub app installation
-              page. You should find the App on GitHub and add the repo yourself.
+              {interpolateMessage(
+                stringFormatter.format('installGitHubAppMissingSlug'),
+                { envName: <code>{appSlugFromContext.envName}</code> }
+              )}
             </Text>
           ) : (
-            <Text>Find the App on GitHub and add the repo.</Text>
+            <Text>
+              {stringFormatter.format('installGitHubAppGenericWarning')}
+            </Text>
           )}
         </Notice>
       )}

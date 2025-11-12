@@ -11,14 +11,24 @@ import {
   createContext,
   useCallback,
   useContext,
+  useMemo,
   useRef,
 } from 'react';
 
+import { ActionButton } from '@keystar/ui/button';
+import { ActionGroup, Item as ActionGroupItem } from '@keystar/ui/action-group';
 import { Badge } from '@keystar/ui/badge';
 import { Divider, ScrollView, HStack, VStack } from '@keystar/ui/layout';
 import { NavList, NavItem, NavGroup } from '@keystar/ui/nav-list';
 import { Blanket } from '@keystar/ui/overlays';
 import { StatusLight } from '@keystar/ui/status-light';
+import { Menu, MenuTrigger, Item as MenuItem, Section } from '@keystar/ui/menu';
+import { Icon } from '@keystar/ui/icon';
+import { globeIcon } from '@keystar/ui/icon/icons/globeIcon';
+import { sunIcon } from '@keystar/ui/icon/icons/sunIcon';
+import { moonIcon } from '@keystar/ui/icon/icons/moonIcon';
+import { monitorIcon } from '@keystar/ui/icon/icons/monitorIcon';
+import { moreHorizontalIcon } from '@keystar/ui/icon/icons/moreHorizontalIcon';
 import {
   breakpoints,
   css,
@@ -37,9 +47,12 @@ import { pluralize } from '../../pluralize';
 
 import { useBrand } from '../common';
 import { SIDE_PANEL_ID } from '../constants';
-import { GitMenu, UserActions, PreferencesMenu } from './components';
+import { GitMenu, UserActions } from './components';
 import { BranchPicker } from '../../branch-selection';
 import { useAppState, useConfig } from '../context';
+import { useThemeContext } from '../theme';
+import { ColorScheme } from '@keystar/ui/types';
+import { locales } from '../../l10n/locales';
 
 const SidebarContext = createContext<OverlayTriggerState | null>(null);
 export function useSidebar() {
@@ -88,7 +101,6 @@ export function SidebarPanel() {
 }
 
 function SidebarHeader() {
-  let isLocalNoCloud = useIsLocalNoCloud();
   let { brandMark, brandName } = useBrand();
 
   return (
@@ -119,7 +131,7 @@ function SidebarHeader() {
           {brandName}
         </Text>
       </HStack>
-      {isLocalNoCloud && <PreferencesMenu />}
+      <SidebarPreferences />
     </HStack>
   );
 }
@@ -139,7 +151,6 @@ function SidebarFooter() {
       gap="regular"
     >
       <UserActions />
-      <PreferencesMenu />
     </HStack>
   );
 }
@@ -333,5 +344,81 @@ function NavItemOrGroup({ itemOrGroup }: { itemOrGroup: ItemOrGroup }) {
       </Text>
       {changeElement}
     </NavItem>
+  );
+}
+
+const THEME_OPTIONS = [
+  { key: 'light', icon: sunIcon, labelKey: 'themeLight' },
+  { key: 'dark', icon: moonIcon, labelKey: 'themeDark' },
+  { key: 'auto', icon: monitorIcon, labelKey: 'themeSystem' },
+] as const;
+
+function SidebarPreferences() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  const { theme, setTheme } = useThemeContext();
+
+  const localeItems = useMemo(() =>
+    typedKeys(locales).map(key => ({
+      key,
+      label: locales[key].replace(/\s*\([^)]*\)\s*.*$/, ''),
+    })),
+    []
+  );
+
+  const handleLocaleChange = useCallback((key: string | number) => {
+    const next = String(key);
+    if (typeof window === 'undefined') return;
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('locale', next);
+      window.location.replace(url.toString());
+    } catch {}
+  }, []);
+
+  return (
+    <MenuTrigger align="end">
+      <ActionButton aria-label={stringFormatter.format('preferences')} prominence="low">
+        <Icon src={moreHorizontalIcon} />
+      </ActionButton>
+      <Menu aria-label={stringFormatter.format('preferences')} onAction={handleLocaleChange}>
+        <Section aria-label={stringFormatter.format('appearance')}>
+          <MenuItem textValue={stringFormatter.format('appearance')}>
+            <VStack gap="medium" padding="medium">
+              <Text color="neutralSecondary" size="small">
+                {stringFormatter.format('appearance')}
+              </Text>
+              <ActionGroup
+                aria-label={stringFormatter.format('theme')}
+                buttonLabelBehavior="hide"
+                density="compact"
+                items={THEME_OPTIONS}
+                overflowMode="wrap"
+                selectedKeys={[theme]}
+                selectionMode="single"
+                onAction={key => setTheme(key as ColorScheme)}
+              >
+                {item => (
+                  <ActionGroupItem
+                    key={item.key}
+                    textValue={stringFormatter.format(item.labelKey)}
+                  >
+                    <Icon src={item.icon} />
+                    <Text>{stringFormatter.format(item.labelKey)}</Text>
+                  </ActionGroupItem>
+                )}
+              </ActionGroup>
+            </VStack>
+          </MenuItem>
+        </Section>
+        <Section aria-label={stringFormatter.format('language')} items={localeItems}>
+          {item => (
+            <MenuItem key={item.key} textValue={item.label}>
+              <Icon src={globeIcon} />
+              <Text>{item.label}</Text>
+            </MenuItem>
+          )}
+        </Section>
+      </Menu>
+    </MenuTrigger>
   );
 }

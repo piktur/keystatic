@@ -1,0 +1,6 @@
+{
+  "key": "manageAccount",
+  "value": "Manage Account",
+  "notes": "Label for the link that opens the Keystatic Cloud account page.",
+  "type": "global"
+}

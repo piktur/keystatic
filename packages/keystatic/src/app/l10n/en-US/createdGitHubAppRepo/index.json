@@ -1,0 +1,6 @@
+{
+  "key": "createdGitHubAppRepo",
+  "value": "Make sure to add the app to the {repo} repository.",
+  "notes": "Reminder to add the app to the repository. {repo} will be replaced with the repository name code element.",
+  "type": "global"
+}

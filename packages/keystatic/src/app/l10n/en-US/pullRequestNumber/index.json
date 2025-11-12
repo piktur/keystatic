@@ -1,0 +1,6 @@
+{
+  "key": "pullRequestNumber",
+  "value": "Pull request #{number}",
+  "notes": "",
+  "type": "git-related"
+}

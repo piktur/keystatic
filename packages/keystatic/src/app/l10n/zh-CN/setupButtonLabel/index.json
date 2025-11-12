@@ -1,0 +1,6 @@
+{
+  "key": "setupButtonLabel",
+  "value": "创建 GitHub 应用",
+  "notes": "Submit button label for creating the GitHub app.",
+  "type": "global"
+}

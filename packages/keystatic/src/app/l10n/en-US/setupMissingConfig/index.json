@@ -1,0 +1,6 @@
+{
+  "key": "setupMissingConfig",
+  "value": "Keystatic doesn't have the required config.",
+  "notes": "Explains that the config is missing.",
+  "type": "global"
+}

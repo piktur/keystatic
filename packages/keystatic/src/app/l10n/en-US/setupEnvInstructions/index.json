@@ -1,0 +1,6 @@
+{
+  "key": "setupEnvInstructions",
+  "value": "If you've already created your GitHub app, make sure to add the following environment variables:",
+  "notes": "Intro text for the list of required environment variables.",
+  "type": "global"
+}

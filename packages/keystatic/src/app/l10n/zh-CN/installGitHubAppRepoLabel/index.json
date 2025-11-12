@@ -1,0 +1,6 @@
+{
+  "key": "installGitHubAppRepoLabel",
+  "value": "仓库名称",
+  "notes": "Label for the read-only repo name field.",
+  "type": "global"
+}

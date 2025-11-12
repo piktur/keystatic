@@ -1,0 +1,6 @@
+{
+  "key": "setupEnvInstructions",
+  "value": "如果你已经创建了 GitHub 应用，请确保添加以下环境变量：",
+  "notes": "Intro text for the list of required environment variables.",
+  "type": "global"
+}

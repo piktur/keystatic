@@ -15,23 +15,18 @@ import { Avatar } from '@keystar/ui/avatar';
 import { ActionButton } from '@keystar/ui/button';
 import { AlertDialog, DialogContainer } from '@keystar/ui/dialog';
 import { Icon } from '@keystar/ui/icon';
-import { moreHorizontalIcon } from '@keystar/ui/icon/icons/moreHorizontalIcon';
 import { logOutIcon } from '@keystar/ui/icon/icons/logOutIcon';
 import { gitPullRequestIcon } from '@keystar/ui/icon/icons/gitPullRequestIcon';
 import { gitBranchPlusIcon } from '@keystar/ui/icon/icons/gitBranchPlusIcon';
 import { githubIcon } from '@keystar/ui/icon/icons/githubIcon';
 import { gitForkIcon } from '@keystar/ui/icon/icons/gitForkIcon';
 import { imageIcon } from '@keystar/ui/icon/icons/imageIcon';
-import { monitorIcon } from '@keystar/ui/icon/icons/monitorIcon';
-import { moonIcon } from '@keystar/ui/icon/icons/moonIcon';
-import { sunIcon } from '@keystar/ui/icon/icons/sunIcon';
 import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon';
 import { userIcon } from '@keystar/ui/icon/icons/userIcon';
 import { Flex } from '@keystar/ui/layout';
 import { ActionMenu, Menu, MenuTrigger } from '@keystar/ui/menu';
 import { ClearSlots } from '@keystar/ui/slots';
-import { css, useMediaQuery } from '@keystar/ui/style';
-import { ColorScheme } from '@keystar/ui/types';
+import { css } from '@keystar/ui/style';
 import { Text } from '@keystar/ui/typography';
 
 import { CreateBranchDialog } from '../../branch-selection';
@@ -54,8 +49,6 @@ import {
   useRepoInfo,
 } from '../data';
 import { useViewer } from '../viewer-data';
-import { useThemeContext } from '../theme';
-import { locales as supportedLocales } from '../../l10n/locales';
 import { useImageLibraryURL } from '../../../component-blocks/cloud-image-preview';
 import { clearObjectCache } from '../../object-cache';
 import { clearDrafts } from '../../persistence';
@@ -72,123 +65,6 @@ type MenuItem = {
 };
 type MenuSection = { key: string; label: string; children: MenuItem[] };
 
-// Theme controls
-// -----------------------------------------------------------------------------
-
-const THEME_MODE = {
-  light: { icon: sunIcon, label: 'Light' },
-  dark: { icon: moonIcon, label: 'Dark' },
-  auto: { icon: monitorIcon, label: 'System' },
-} as const;
-const themeItems = Object.entries(THEME_MODE).map(([id, { icon, label }]) => ({
-  id,
-  icon,
-  label,
-}));
-
-export function ThemeMenu() {
-  let { theme, setTheme } = useThemeContext();
-  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
-  let matchesDark = useMediaQuery('(prefers-color-scheme: dark)');
-  let icon = THEME_MODE[theme].icon;
-  if (theme === 'auto') {
-    icon = matchesDark ? moonIcon : sunIcon;
-  }
-
-  return (
-    <MenuTrigger align="end">
-      <ActionButton aria-label={stringFormatter.format('theme')} prominence="low">
-        <Icon src={icon} />
-      </ActionButton>
-      <Menu
-        items={themeItems}
-        onSelectionChange={([key]) => setTheme(key as ColorScheme)}
-        disallowEmptySelection
-        selectedKeys={[theme]}
-        selectionMode="single"
-      >
-        {item => (
-          <Item textValue={item.label}>
-            <Icon src={item.icon} />
-            <Text>{item.label}</Text>
-          </Item>
-        )}
-      </Menu>
-    </MenuTrigger>
-  );
-}
-
-// Preferences (Theme + Locale)
-// -----------------------------------------------------------------------------
-
-export function PreferencesMenu() {
-  const { theme, setTheme } = useThemeContext();
-  const matchesDark = useMediaQuery('(prefers-color-scheme: dark)');
-  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
-
-  const themeIcon = (() => {
-    if (theme === 'auto') return matchesDark ? moonIcon : sunIcon;
-    return THEME_MODE[theme].icon;
-  })();
-
-  const themeSection: MenuSection = {
-    key: 'appearance',
-    label: stringFormatter.format('appearance'),
-    children: [
-      { key: 'theme:light', icon: sunIcon, label: stringFormatter.format('themeLight') },
-      { key: 'theme:dark', icon: moonIcon, label: stringFormatter.format('themeDark') },
-      { key: 'theme:auto', icon: monitorIcon, label: stringFormatter.format('themeSystem') },
-    ],
-  } as any;
-
-  const localeSection: MenuSection = {
-    key: 'language',
-    label: stringFormatter.format('language'),
-    children: (Object.keys(supportedLocales) as Array<keyof typeof supportedLocales>).map(k => ({
-      key: `locale:${k as string}`,
-      icon: themeIcon, // keep spacing consistent; icon is optional
-      label: supportedLocales[k],
-    })) as any,
-  };
-
-  return (
-    <MenuTrigger align="end">
-      <ActionButton aria-label={stringFormatter.format('preferences')} prominence="low">
-        <Icon src={moreHorizontalIcon} />
-      </ActionButton>
-      <Menu
-        aria-label={stringFormatter.format('preferences')}
-        items={[themeSection, localeSection]}
-        onAction={key => {
-          const action = String(key);
-          if (action.startsWith('theme:')) {
-            setTheme(action.split(':')[1] as ColorScheme);
-            return;
-          }
-          if (action.startsWith('locale:')) {
-            const next = action.split(':')[1];
-            try {
-              const url = new URL(window.location.href);
-              url.searchParams.set('locale', next);
-              window.location.replace(url.toString());
-            } catch {}
-          }
-        }}
-      >
-        {section => (
-          <Section key={section.key} aria-label={section.label} items={section.children}>
-            {item => (
-              <Item key={item.key} textValue={item.label}>
-                <Icon src={item.icon} />
-                <Text>{item.label}</Text>
-              </Item>
-            )}
-          </Section>
-        )}
-      </Menu>
-    </MenuTrigger>
-  );
-}
 
 // User controls
 // -----------------------------------------------------------------------------
@@ -244,7 +120,7 @@ export function UserMenu(user: {
         label: 'Log out',
         href:
           config.storage.kind === 'github'
-            ? (('/api' + ((typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic')) + '/github/logout')
+            ? (('/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')) + '/github/logout')
             : undefined,
         icon: logOutIcon,
       },

@@ -298,7 +298,7 @@ function ItemPageInner(
             <CreateBranchDuringUpdateDialog
               branchOid={baseCommit}
               onCreate={async newBranch => {
-                const __ksBase = (typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic';
+                const __ksBase = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
                 const itemBasePath = `${__ksBase}/branch/${encodeURIComponent(
                   newBranch
                 )}/collection/${encodeURIComponent(collection)}/item/`;
@@ -807,7 +807,7 @@ export function CreateBranchDuringUpdateDialog(props: {
             <TextField
               value={branchName}
               onChange={setBranchName}
-              label="Branch name"
+              label={stringFormatter.format('branchName')}
               description={props.reason}
               autoFocus
               errorMessage={prettyErrorForCreateBranchMutation(error)}

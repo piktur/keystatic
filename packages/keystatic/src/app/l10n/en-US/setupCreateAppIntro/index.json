@@ -1,0 +1,6 @@
+{
+  "key": "setupCreateAppIntro",
+  "value": "If you haven't created your GitHub app for Keystatic, you can create one below.",
+  "notes": "Explains that the app can be created via the form.",
+  "type": "global"
+}

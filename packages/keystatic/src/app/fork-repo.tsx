@@ -1,4 +1,5 @@
 import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import { interpolateMessage } from './l10n/interpolate';
 import { ButtonGroup, Button } from '@keystar/ui/button';
 import { Dialog } from '@keystar/ui/dialog';
 import { Content } from '@keystar/ui/slots';
@@ -73,7 +74,7 @@ export function ForkRepoDialog(props: {
         props.onDismiss();
       }}
     >
-      <Heading>Fork Repo</Heading>
+      <Heading>{stringFormatter.format('forkRepoTitle')}</Heading>
       {state.kind === 'error' ? (
         <>
           <Content>
@@ -90,28 +91,41 @@ export function ForkRepoDialog(props: {
           <Content>
             <Flex gap="large" direction="column" marginBottom="large">
               <Text>
-                You don't have permission to write to this repo so to save your
-                changes, you need to fork the repo.
+                {stringFormatter.format('forkRepoPermission')}
               </Text>
               <Text>
-                To start,{' '}
-                <TextLink
-                  href={`https://github.com/${serializeRepoConfig(
-                    props.config.storage.repo
-                  )}/fork`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  fork the repo on GitHub
-                </TextLink>
-                . Then, come back to this page and{' '}
-                <TextLink
-                  href={`https://github.com/apps/${appSlug?.value}/installations/new?state=close`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  install the Keystatic GitHub App on your fork.
-                </TextLink>
+                {interpolateMessage(
+                  stringFormatter.format('forkRepoForkInstruction'),
+                  {
+                    forkLink: (
+                      <TextLink
+                        href={`https://github.com/${serializeRepoConfig(
+                          props.config.storage.repo
+                        )}/fork`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {stringFormatter.format('forkRepoForkInstructionLink')}
+                      </TextLink>
+                    ),
+                  }
+                )}
+              </Text>
+              <Text>
+                {interpolateMessage(
+                  stringFormatter.format('forkRepoInstallInstruction'),
+                  {
+                    installLink: (
+                      <TextLink
+                        href={`https://github.com/apps/${appSlug?.value}/installations/new?state=close`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {stringFormatter.format('forkRepoInstallInstructionLink')}
+                      </TextLink>
+                    ),
+                  }
+                )}
               </Text>
             </Flex>
           </Content>

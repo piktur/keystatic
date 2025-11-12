@@ -1,0 +1,6 @@
+{
+  "key": "setupDeployedUrlLabel",
+  "value": "Deployed app URL",
+  "notes": "Label for the deployed app URL field.",
+  "type": "global"
+}

@@ -1,0 +1,6 @@
+{
+  "key": "noResultsMessage",
+  "value": "未找到与“{query}”匹配的条目。",
+  "notes": "",
+  "type": "collection-list"
+}

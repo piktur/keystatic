@@ -1,0 +1,6 @@
+{
+  "key": "setupOrganizationLabel",
+  "value": "GitHub 组织（如有）",
+  "notes": "Label for the optional GitHub organization field.",
+  "type": "global"
+}

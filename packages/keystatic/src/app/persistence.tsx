@@ -1,8 +1,9 @@
 import { toastQueue } from '@keystar/ui/toast';
 import { Text } from '@keystar/ui/typography';
-import { useLocale } from '@react-aria/i18n';
+import { useLocale, useLocalizedStringFormatter } from '@react-aria/i18n';
 import { UseStore, clear, createStore, del, get, set } from 'idb-keyval';
 import { useState, useMemo } from 'react';
+import localizedMessages from './l10n';
 
 const units = {
   seconds: 60,
@@ -44,20 +45,25 @@ function RelativeTime(props: { date: Date }) {
   return <time dateTime={props.date.toISOString()}>{formatted}</time>;
 }
 
-export function showDraftRestoredToast(
-  savedAt: Date,
-  hasChangedSince: boolean
-) {
-  toastQueue.info(
-    <Text>
-      Restored draft from <RelativeTime date={savedAt} />.{' '}
-      {hasChangedSince && (
+function DraftRestoredToast(props: { savedAt: Date; hasChangedSince: boolean }) {
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
+  return (
+    <>
+      {stringFormatter.format('restoredDraftFromPrefix')}
+      <RelativeTime date={props.savedAt} />
+      {stringFormatter.format('periodSpace')}
+      {props.hasChangedSince && (
         <Text color="accent">
-          Other changes have been made to this entry since the draft. You may
-          want to discard the draft changes.
+          {stringFormatter.format('otherChangesSinceDraft')}
         </Text>
       )}
-    </Text>,
+    </>
+  );
+}
+
+export function showDraftRestoredToast(savedAt: Date, hasChangedSince: boolean) {
+  toastQueue.info(
+    <DraftRestoredToast savedAt={savedAt} hasChangedSince={hasChangedSince} />,
     { timeout: 8000 }
   );
 }

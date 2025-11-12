@@ -1,0 +1,6 @@
+{
+  "key": "forkRepoForkInstruction",
+  "value": "To start, {forkLink}.",
+  "notes": "Instruction to fork the repository. {forkLink} will be replaced with a link to the GitHub fork page.",
+  "type": "global"
+}

@@ -1,0 +1,6 @@
+{
+  "key": "forkRepoPermission",
+  "value": "你没有该仓库的写入权限，如需保存更改请先派生该仓库。",
+  "notes": "Explains why the user must fork the repo due to missing permissions.",
+  "type": "global"
+}

@@ -1,0 +1,6 @@
+{
+  "key": "setupDeployedUrlDescription",
+  "value": "此值应为你的域名根路径。如果尚不确定 Keystatic 的部署位置，可以留空，稍后再在 GitHub 应用中更新。",
+  "notes": "Helper text for the deployed app URL field.",
+  "type": "global"
+}

@@ -1,0 +1,6 @@
+{
+  "key": "emptyCollectionMessage",
+  "value": "尚未有任何条目。{createLink}即可在这里看到它。",
+  "notes": "{createLink} will be replaced with a link to create the first entry.",
+  "type": "collection-list"
+}

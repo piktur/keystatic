@@ -304,7 +304,7 @@ export function useUpsertItem(args: {
           }
           throw new Error('Failed to update');
         } else {
-          const res = await fetch(`${'/api' + ((typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic')}/update`, {
+          const res = await fetch(`${'/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')}/update`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -443,7 +443,7 @@ export function useDeleteItem(args: {
           setState({ kind: 'updated' });
           return true;
         } else {
-          const res = await fetch(`${'/api' + ((typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic')}/update`, {
+          const res = await fetch(`${'/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')}/update`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

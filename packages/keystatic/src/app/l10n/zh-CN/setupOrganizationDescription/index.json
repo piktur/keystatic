@@ -1,0 +1,6 @@
+{
+  "key": "setupOrganizationDescription",
+  "value": "要在组织中创建 GitHub 应用，你必须是组织所有者或 GitHub 应用管理员。留空则会在个人账户中创建。",
+  "notes": "Helper text describing the requirements for creating an app inside an organization.",
+  "type": "global"
+}

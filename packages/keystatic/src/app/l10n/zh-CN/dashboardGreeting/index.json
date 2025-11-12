@@ -1,0 +1,6 @@
+{
+  "key": "dashboardGreeting",
+  "value": "你好，{name}！",
+  "notes": "Greets the user on the dashboard. {name} is the viewer display name.",
+  "type": "global"
+}

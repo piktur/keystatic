@@ -56,7 +56,7 @@ export async function getAuth(config: Config) {
     if (!_refreshTokenPromise) {
       _refreshTokenPromise = (async () => {
         try {
-          const res = await fetch(`${'/api' + ((typeof window !== 'undefined' && (window as any).__KS_BASE_PATH__) ? (window as any).__KS_BASE_PATH__ : '/keystatic')}/github/refresh-token`, {
+          const res = await fetch(`${'/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')}/github/refresh-token`, {
             method: 'POST',
           });
           if (res.status === 200) {
