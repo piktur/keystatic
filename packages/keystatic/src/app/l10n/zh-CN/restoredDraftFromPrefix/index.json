@@ -1,0 +1,6 @@
+{
+  "key": "restoredDraftFromPrefix",
+  "value": "已从以下位置恢复草稿 ",
+  "notes": "末尾空格为刻意保留。",
+  "type": "global"
+}

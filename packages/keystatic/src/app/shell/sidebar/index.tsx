@@ -354,18 +354,21 @@ const THEME_OPTIONS = [
   { key: 'auto', icon: monitorIcon, labelKey: 'themeSystem' },
 ] as const;
 
+const SUPPORTED_LOCALES = ['en-US', 'zh-CN'] as const;
+
 function SidebarPreferences() {
   const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const { theme, setTheme } = useThemeContext();
 
-  const localeItems = useMemo(
-    () =>
-      typedKeys(locales).map(key => ({
+  const localeItems = useMemo(() => {
+    return SUPPORTED_LOCALES.map(key => {
+      const label = locales[key] ?? key;
+      return {
         key,
-        label: locales[key].replace(/\s*\([^)]*\)\s*.*$/, ''),
-      })),
-    []
-  );
+        label: label.replace(/\s*\([^)]*\)\s*.*$/, ''),
+      };
+    });
+  }, []);
 
   const handleLocaleChange = useCallback((key: string | number) => {
     const next = String(key);
@@ -391,8 +394,12 @@ function SidebarPreferences() {
       >
         <Section aria-label={stringFormatter.format('appearance')}>
           <MenuItem textValue={stringFormatter.format('appearance')}>
-            <VStack gap="medium" padding="medium">
-              <Text color="neutralSecondary" size="small">
+            <VStack gap="small" padding="regular" width="100%">
+              <Text
+                color="neutralSecondary"
+                size="small"
+                UNSAFE_className={css({ whiteSpace: 'nowrap' })}
+              >
                 {stringFormatter.format('appearance')}
               </Text>
               <ActionGroup
@@ -400,7 +407,7 @@ function SidebarPreferences() {
                 buttonLabelBehavior="show"
                 density="compact"
                 items={THEME_OPTIONS}
-                overflowMode="collapse"
+                overflowMode="wrap"
                 selectedKeys={[theme]}
                 selectionMode="single"
                 onAction={key => setTheme(key as ColorScheme)}
