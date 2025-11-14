@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { CollectionAction } from '../../config';
 import { loadCollectionActions } from './loader';
 
@@ -54,8 +54,9 @@ export function useFilteredCollectionActions(
 
     return allActions.filter(action => {
       if (!action.condition) return true;
+
       try {
-        return action.condition(filterContext);
+        return !!action.condition(filterContext);
       } catch (error) {
         console.error(
           `Error evaluating action condition for ${action.key}:`,

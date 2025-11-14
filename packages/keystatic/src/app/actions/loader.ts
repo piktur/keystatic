@@ -57,9 +57,7 @@ async function loadActionModules(): Promise<
 
   for (const [path, loadModule] of Object.entries(loader)) {
     try {
-      const module = await loadModule();
-      const normalizedPath = normalizePath(path);
-      modules[normalizedPath] = module;
+      modules[getActionName(path)] = await loadModule();
     } catch (error) {
       console.error(`Failed to load action module: ${path}`, error);
     }
@@ -68,10 +66,9 @@ async function loadActionModules(): Promise<
   return modules;
 }
 
-function normalizePath(path: string): string {
+function getActionName(path: string): string {
   return path
-    .replace(/^\.\.\/\.\.\/packages\/[^/]+\/src\/keystatic\/actions/, '')
-    .replace(/^\/src\/keystatic\/actions/, '')
+    .replace(/^.*\/keystatic\/actions/, '')
     .replace(/\.(ts|js|tsx|jsx)$/, '');
 }
 

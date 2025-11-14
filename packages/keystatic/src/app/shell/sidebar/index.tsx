@@ -16,13 +16,12 @@ import {
 } from 'react';
 
 import { ActionButton } from '@keystar/ui/button';
-import { ActionGroup, Item as ActionGroupItem } from '@keystar/ui/action-group';
 import { Badge } from '@keystar/ui/badge';
 import { Divider, ScrollView, HStack, VStack } from '@keystar/ui/layout';
 import { NavList, NavItem, NavGroup } from '@keystar/ui/nav-list';
 import { Blanket } from '@keystar/ui/overlays';
 import { StatusLight } from '@keystar/ui/status-light';
-import { Menu, MenuTrigger, Item as MenuItem, Section } from '@keystar/ui/menu';
+import { Menu, MenuTrigger, Item, Section } from '@keystar/ui/menu';
 import { Icon } from '@keystar/ui/icon';
 import { globeIcon } from '@keystar/ui/icon/icons/globeIcon';
 import { sunIcon } from '@keystar/ui/icon/icons/sunIcon';
@@ -35,6 +34,7 @@ import {
   tokenSchema,
   transition,
   useBreakpoint,
+  useMediaQuery,
 } from '@keystar/ui/style';
 import { Text } from '@keystar/ui/typography';
 import { usePrevious } from '@keystar/ui/utils';
@@ -132,6 +132,7 @@ function SidebarHeader() {
           {brandName}
         </Text>
       </HStack>
+      <ThemeMenu />
       <SidebarPreferences />
     </HStack>
   );
@@ -356,9 +357,57 @@ const THEME_OPTIONS = [
 
 const SUPPORTED_LOCALES = ['en-US', 'zh-CN'] as const;
 
-function SidebarPreferences() {
+export function ThemeMenu() {
   const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const { theme, setTheme } = useThemeContext();
+  const matchesDark = useMediaQuery('(prefers-color-scheme: dark)');
+
+  const themeItems = useMemo(
+    () =>
+      THEME_OPTIONS.map(option => ({
+        key: option.key,
+        icon: option.icon,
+        label: stringFormatter.format(option.labelKey),
+      })),
+    [stringFormatter]
+  );
+
+  const current =
+    themeItems.find(option => option.key === theme) ?? themeItems[0];
+
+  let icon = current.icon;
+  if (theme === 'auto') {
+    icon = matchesDark ? moonIcon : sunIcon;
+  }
+
+  return (
+    <MenuTrigger align="end">
+      <ActionButton
+        aria-label={stringFormatter.format('appearance')}
+        prominence="low"
+      >
+        <Icon src={icon} />
+      </ActionButton>
+      <Menu
+        items={themeItems}
+        disallowEmptySelection
+        selectedKeys={[theme]}
+        selectionMode="single"
+        onAction={key => setTheme(key as ColorScheme)}
+      >
+        {item => (
+          <Item key={item.key} textValue={item.label}>
+            <Icon src={item.icon} />
+            <Text>{item.label}</Text>
+          </Item>
+        )}
+      </Menu>
+    </MenuTrigger>
+  );
+}
+
+function SidebarPreferences() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
 
   const localeItems = useMemo(() => {
     return SUPPORTED_LOCALES.map(key => {
@@ -392,49 +441,15 @@ function SidebarPreferences() {
         aria-label={stringFormatter.format('preferences')}
         onAction={handleLocaleChange}
       >
-        <Section aria-label={stringFormatter.format('appearance')}>
-          <MenuItem textValue={stringFormatter.format('appearance')}>
-            <VStack gap="small" padding="regular" width="100%">
-              <Text
-                color="neutralSecondary"
-                size="small"
-                UNSAFE_className={css({ whiteSpace: 'nowrap' })}
-              >
-                {stringFormatter.format('appearance')}
-              </Text>
-              <ActionGroup
-                aria-label={stringFormatter.format('theme')}
-                buttonLabelBehavior="show"
-                density="compact"
-                items={THEME_OPTIONS}
-                overflowMode="wrap"
-                selectedKeys={[theme]}
-                selectionMode="single"
-                onAction={key => setTheme(key as ColorScheme)}
-                width="100%"
-              >
-                {item => (
-                  <ActionGroupItem
-                    key={item.key}
-                    textValue={stringFormatter.format(item.labelKey)}
-                  >
-                    <Icon src={item.icon} />
-                    <Text>{stringFormatter.format(item.labelKey)}</Text>
-                  </ActionGroupItem>
-                )}
-              </ActionGroup>
-            </VStack>
-          </MenuItem>
-        </Section>
         <Section
           aria-label={stringFormatter.format('language')}
           items={localeItems}
         >
           {item => (
-            <MenuItem key={item.key} textValue={item.label}>
+            <Item key={item.key} textValue={item.label}>
               <Icon src={globeIcon} />
               <Text>{item.label}</Text>
-            </MenuItem>
+            </Item>
           )}
         </Section>
       </Menu>

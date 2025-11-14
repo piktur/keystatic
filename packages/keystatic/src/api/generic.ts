@@ -376,6 +376,7 @@ async function githubLogin(
     typeof rawFrom === 'string' && keystaticRouteRegex.test(rawFrom)
       ? rawFrom
       : '/';
+
   const state = bytesToHex(webcrypto.getRandomValues(new Uint8Array(10)));
   const url = new URL('https://github.com/login/oauth/authorize');
   url.searchParams.set('client_id', config.clientId);
@@ -385,6 +386,7 @@ async function githubLogin(
       'github',
       'oauth',
       'callback',
+      new URL(from).searchParams // Forward params
     ]
       .filter(Boolean)
       .join('/'),
