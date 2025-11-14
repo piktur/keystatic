@@ -386,7 +386,9 @@ async function githubLogin(
       'github',
       'oauth',
       'callback',
-      new URL(from).searchParams // Forward params
+      // @todo Extremely brittle -- don't rely on this
+      // @todo from is not a valid URL
+      // new URL(from).searchParams // Forward params
     ]
       .filter(Boolean)
       .join('/'),

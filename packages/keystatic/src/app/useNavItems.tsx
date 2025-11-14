@@ -43,7 +43,7 @@ export function useNavItems(): ItemOrGroup[] {
       [stringFormatter.format('collections')]: collectionKeys,
     }),
     ...(!!singletonKeys.length && {
-      [stringFormatter.format('sections')]: singletonKeys,
+      [stringFormatter.format('singletons')]: singletonKeys,
     }),
   };
   const options = { basePath, changeMap, config };
