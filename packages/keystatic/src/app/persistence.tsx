@@ -45,7 +45,10 @@ function RelativeTime(props: { date: Date }) {
   return <time dateTime={props.date.toISOString()}>{formatted}</time>;
 }
 
-function DraftRestoredToast(props: { savedAt: Date; hasChangedSince: boolean }) {
+function DraftRestoredToast(props: {
+  savedAt: Date;
+  hasChangedSince: boolean;
+}) {
   const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   return (
     <>
@@ -61,7 +64,10 @@ function DraftRestoredToast(props: { savedAt: Date; hasChangedSince: boolean }) 
   );
 }
 
-export function showDraftRestoredToast(savedAt: Date, hasChangedSince: boolean) {
+export function showDraftRestoredToast(
+  savedAt: Date,
+  hasChangedSince: boolean
+) {
   toastQueue.info(
     <DraftRestoredToast savedAt={savedAt} hasChangedSince={hasChangedSince} />,
     { timeout: 8000 }

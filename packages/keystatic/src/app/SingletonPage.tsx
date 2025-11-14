@@ -229,9 +229,7 @@ function SingletonPageInner(
             />
           ) : (
             props.hasChanged && (
-              <Badge tone="pending">
-                {stringFormatter.format('unsaved')}
-              </Badge>
+              <Badge tone="pending">{stringFormatter.format('unsaved')}</Badge>
             )
           )}
         </Flex>
@@ -313,7 +311,10 @@ function SingletonPageInner(
             <CreateBranchDuringUpdateDialog
               branchOid={baseCommit}
               onCreate={async newBranch => {
-                const __ksBase = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
+                const __ksBase =
+                  typeof window !== 'undefined' && window.__KS_BASE_PATH__
+                    ? window.__KS_BASE_PATH__
+                    : '/keystatic';
                 router.push(
                   `${__ksBase}/branch/${encodeURIComponent(
                     newBranch

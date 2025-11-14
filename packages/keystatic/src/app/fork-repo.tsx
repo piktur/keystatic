@@ -1,5 +1,4 @@
 import { useLocalizedStringFormatter } from '@react-aria/i18n';
-import { interpolateMessage } from './l10n/interpolate';
 import { ButtonGroup, Button } from '@keystar/ui/button';
 import { Dialog } from '@keystar/ui/dialog';
 import { Content } from '@keystar/ui/slots';
@@ -90,42 +89,28 @@ export function ForkRepoDialog(props: {
         <>
           <Content>
             <Flex gap="large" direction="column" marginBottom="large">
+              <Text>{stringFormatter.format('forkRepoPermission')}</Text>
               <Text>
-                {stringFormatter.format('forkRepoPermission')}
+                {stringFormatter.format('forkRepoForkInstruction')}
+                <TextLink
+                  href={`https://github.com/${serializeRepoConfig(
+                    props.config.storage.repo
+                  )}/fork`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {stringFormatter.format('forkRepoForkInstructionLink')}
+                </TextLink>
               </Text>
               <Text>
-                {interpolateMessage(
-                  stringFormatter.format('forkRepoForkInstruction'),
-                  {
-                    forkLink: (
-                      <TextLink
-                        href={`https://github.com/${serializeRepoConfig(
-                          props.config.storage.repo
-                        )}/fork`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {stringFormatter.format('forkRepoForkInstructionLink')}
-                      </TextLink>
-                    ),
-                  }
-                )}
-              </Text>
-              <Text>
-                {interpolateMessage(
-                  stringFormatter.format('forkRepoInstallInstruction'),
-                  {
-                    installLink: (
-                      <TextLink
-                        href={`https://github.com/apps/${appSlug?.value}/installations/new?state=close`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {stringFormatter.format('forkRepoInstallInstructionLink')}
-                      </TextLink>
-                    ),
-                  }
-                )}
+                {stringFormatter.format('forkRepoInstallInstruction')}
+                <TextLink
+                  href={`https://github.com/apps/${appSlug?.value}/installations/new?state=close`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {stringFormatter.format('forkRepoInstallInstructionLink')}
+                </TextLink>
               </Text>
             </Flex>
           </Content>

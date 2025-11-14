@@ -23,7 +23,10 @@ export function RouterProvider(props: { children: ReactNode }) {
 
   function navigate(url: string, replace: boolean) {
     const newUrl = new URL(url, window.location.href);
-    const __ksBase = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
+    const __ksBase =
+      typeof window !== 'undefined' && window.__KS_BASE_PATH__
+        ? window.__KS_BASE_PATH__
+        : '/keystatic';
     if (
       newUrl.origin !== window.location.origin ||
       !newUrl.pathname.startsWith(__ksBase)
@@ -43,7 +46,10 @@ export function RouterProvider(props: { children: ReactNode }) {
     navigate(path, false);
   }
   const parsedUrl = new URL(url);
-  const __ksBase = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
+  const __ksBase =
+    typeof window !== 'undefined' && window.__KS_BASE_PATH__
+      ? window.__KS_BASE_PATH__
+      : '/keystatic';
   let replaced = parsedUrl.pathname;
   if (replaced.startsWith(__ksBase)) replaced = replaced.slice(__ksBase.length);
   replaced = replaced.replace(/^\//, '');

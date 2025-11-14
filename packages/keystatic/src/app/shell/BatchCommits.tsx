@@ -110,10 +110,16 @@ function BatchCommitsDialog() {
   ]);
 
   return (
-    <Dialog size="large" ref={dialogRef} aria-label={stringFormatter.format('reviewChanges')}>
+    <Dialog
+      size="large"
+      ref={dialogRef}
+      aria-label={stringFormatter.format('reviewChanges')}
+    >
       {!isBelowTablet && (
         <>
-          <Heading ref={headingRef}>{stringFormatter.format('reviewChanges')}</Heading>
+          <Heading ref={headingRef}>
+            {stringFormatter.format('reviewChanges')}
+          </Heading>
           <Header>
             <BranchPicker />
           </Header>
@@ -196,10 +202,15 @@ function BatchCommitsDialog() {
                 <ChangeTypeIndicator type={item.type} />
               </HStack>
               <TooltipTrigger>
-                <ActionButton aria-label={stringFormatter.format('revert')} marginStart="regular">
+                <ActionButton
+                  aria-label={stringFormatter.format('revert')}
+                  marginStart="regular"
+                >
                   <Icon src={undoIcon} />
                 </ActionButton>
-                <Tooltip>{stringFormatter.format('revertChangesToItem')}</Tooltip>
+                <Tooltip>
+                  {stringFormatter.format('revertChangesToItem')}
+                </Tooltip>
               </TooltipTrigger>
             </Item>
           )}

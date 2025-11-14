@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { useLocalizedStringFormatter } from '@react-aria/i18n';
-import { interpolateMessage } from '../l10n/interpolate';
 import { Button } from '@keystar/ui/button';
 import { Box, Flex } from '@keystar/ui/layout';
 import { css } from '@keystar/ui/style';
@@ -15,7 +14,10 @@ export function KeystaticSetup(props: { config: GitHubConfig }) {
   const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const [deployedURL, setDeployedURL] = useState('');
   const [organization, setOrganization] = useState('');
-  const basePath = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
+  const basePath =
+    typeof window !== 'undefined' && window.__KS_BASE_PATH__
+      ? window.__KS_BASE_PATH__
+      : '/keystatic';
 
   return (
     <Flex alignItems="center" justifyContent="center" margin="xxlarge">
@@ -67,11 +69,9 @@ export function KeystaticSetup(props: { config: GitHubConfig }) {
           onChange={setOrganization}
         />
         <Text>
-          {interpolateMessage(
-            stringFormatter.format('setupRedirectDescription'),
-            // eslint-disable-next-line react/jsx-no-literals
-            { envFile: <code>.env</code> }
-          )}
+          {stringFormatter.format('setupRedirectDescription')}
+          // eslint-disable-next-line react/jsx-no-literals
+          <code>.env</code>
         </Text>
         <input
           type="text"
@@ -91,7 +91,10 @@ export function KeystaticSetup(props: { config: GitHubConfig }) {
               `http://127.0.0.1/api${basePath}/github/oauth/callback`,
               ...(deployedURL
                 ? [
-                    new URL(`/api${basePath}/github/oauth/callback`, deployedURL).toString(),
+                    new URL(
+                      `/api${basePath}/github/oauth/callback`,
+                      deployedURL
+                    ).toString(),
                   ]
                 : []),
             ],

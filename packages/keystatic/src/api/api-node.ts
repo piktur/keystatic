@@ -86,7 +86,9 @@ ${
   const newEnv = prevEnv ? `${prevEnv}\n\n${toAddToEnv}` : toAddToEnv;
   await fs.writeFile('.env', newEnv);
   await wait(200);
-  return redirect(`${basePath}/created-github-app?slug=` + ghAppDataResult.slug);
+  return redirect(
+    `${basePath}/created-github-app?slug=` + ghAppDataResult.slug
+  );
 }
 
 export function localModeApiHandler(

@@ -1,5 +1,5 @@
 import { ColorScheme } from '@keystar/ui/types';
-import { ReactElement, ComponentType } from 'react';
+import { ReactElement } from 'react';
 
 import { ComponentSchema, FormField, SlugFormField } from './form/api';
 import type { Locale } from './app/l10n/locales';
@@ -21,14 +21,16 @@ export type ActionContext<Schema extends Record<string, ComponentSchema>> = {
   };
 };
 
-export type ActionResult = 
+export type ActionResult =
   | { success: true; message?: string; newState?: Record<string, unknown> }
   | { success: false; error: string };
 
-export type CollectionAction<Schema extends Record<string, ComponentSchema> = any> = {
+export type CollectionAction<
+  Schema extends Record<string, ComponentSchema> = any,
+> = {
   key: string;
   label: string;
-  icon?: ReactElement | ComponentType | any;
+  icon?: ReactElement | ((props: any) => ReactElement | null) | any;
   description?: string;
   handler: (context: ActionContext<Schema>) => Promise<ActionResult>;
   condition?: (context: ActionContext<Schema>) => boolean;

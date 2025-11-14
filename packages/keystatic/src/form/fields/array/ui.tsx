@@ -293,9 +293,13 @@ export function useArrayFieldValidationMessage<Element extends ComponentSchema>(
   return useMemo(() => {
     if (forceValidation) {
       if (minLength && elements.length < minLength) {
-        return stringFormatter.format('mustHaveAtLeastItems', { count: minLength });
+        return stringFormatter.format('mustHaveAtLeastItems', {
+          count: minLength,
+        });
       } else if (maxLength && elements.length > maxLength) {
-        return stringFormatter.format('mustHaveAtMostItems', { count: maxLength });
+        return stringFormatter.format('mustHaveAtMostItems', {
+          count: maxLength,
+        });
       }
     }
   }, [elements.length, forceValidation, maxLength, minLength, stringFormatter]);
@@ -388,7 +392,9 @@ export function ArrayFieldListView<Element extends ComponentSchema>(
       {item => {
         const label =
           props.schema.itemLabel?.(item) ||
-          stringFormatter.format('itemNumber', { index: props.elements.indexOf(item) + 1 });
+          stringFormatter.format('itemNumber', {
+            index: props.elements.indexOf(item) + 1,
+          });
         return (
           <Item key={item.key} textValue={label}>
             <Text>{label}</Text>

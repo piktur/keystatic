@@ -24,7 +24,7 @@ export function SlugFieldInput(
     naiveGenerateSlug: (name: string) => string;
   }
 ) {
-  const stringFormatter = useLocalizedStringFormatter(localizedMessages)
+  const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const slugContext = useContext(SlugFieldContext);
   const path = useContext(PathContext);
   const slugInfo =

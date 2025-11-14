@@ -304,20 +304,28 @@ export function useUpsertItem(args: {
           }
           throw new Error('Failed to update');
         } else {
-          const res = await fetch(`${'/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')}/update`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'no-cors': '1',
-            },
-            body: JSON.stringify({
-              additions: additions.map(addition => ({
-                ...addition,
-                contents: base64Encode(addition.contents),
-              })),
-              deletions,
-            }),
-          });
+          const res = await fetch(
+            `${
+              '/api' +
+              (typeof window !== 'undefined' && window.__KS_BASE_PATH__
+                ? window.__KS_BASE_PATH__
+                : '/keystatic')
+            }/update`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'no-cors': '1',
+              },
+              body: JSON.stringify({
+                additions: additions.map(addition => ({
+                  ...addition,
+                  contents: base64Encode(addition.contents),
+                })),
+                deletions,
+              }),
+            }
+          );
           if (!res.ok) {
             throw new Error(await res.text());
           }
@@ -443,17 +451,25 @@ export function useDeleteItem(args: {
           setState({ kind: 'updated' });
           return true;
         } else {
-          const res = await fetch(`${'/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')}/update`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'no-cors': '1',
-            },
-            body: JSON.stringify({
-              additions: [],
-              deletions: deletions.map(path => ({ path })),
-            }),
-          });
+          const res = await fetch(
+            `${
+              '/api' +
+              (typeof window !== 'undefined' && window.__KS_BASE_PATH__
+                ? window.__KS_BASE_PATH__
+                : '/keystatic')
+            }/update`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'no-cors': '1',
+              },
+              body: JSON.stringify({
+                additions: [],
+                deletions: deletions.map(path => ({ path })),
+              }),
+            }
+          );
           if (!res.ok) {
             throw new Error(await res.text());
           }

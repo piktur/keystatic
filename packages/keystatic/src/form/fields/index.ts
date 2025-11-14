@@ -28,4 +28,3 @@ export { url } from './url';
 
 // NOTE: must be the last export to avoid circular dependencies
 export { markdoc, mdx } from './markdoc';
-

@@ -83,14 +83,20 @@ export function ListButtons(props: {
       >
         {[
           props.lists.unordered && (
-            <Item key="unordered" textValue={stringFormatter.format('bulletList') + ' (- )'}>
+            <Item
+              key="unordered"
+              textValue={stringFormatter.format('bulletList') + ' (- )'}
+            >
               <Icon src={listIcon} />
               <Text>{stringFormatter.format('bulletList')}</Text>
               <Kbd>-⎵</Kbd>
             </Item>
           ),
           props.lists.ordered && (
-            <Item key="ordered" textValue={stringFormatter.format('numberedList') + ' (1.)'}>
+            <Item
+              key="ordered"
+              textValue={stringFormatter.format('numberedList') + ' (1.)'}
+            >
               <Icon src={listOrderedIcon} />
               <Text>{stringFormatter.format('numberedList')}</Text>
               <Kbd>1.⎵</Kbd>

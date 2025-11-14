@@ -29,7 +29,7 @@ type InnerAPIRouteConfig = {
   clientSecret: string;
   secret: string;
   config: Config;
-  basePath: string
+  basePath: string;
 };
 
 const keystaticRouteRegex =
@@ -379,8 +379,18 @@ async function githubLogin(
   const state = bytesToHex(webcrypto.getRandomValues(new Uint8Array(10)));
   const url = new URL('https://github.com/login/oauth/authorize');
   url.searchParams.set('client_id', config.clientId);
-  const apiBase = reqUrl.pathname.replace(/\/github\/login$/, '');
-  url.searchParams.set('redirect_uri', `${reqUrl.origin}${apiBase}oauth/callback`);
+  const redirectUri = new URL(
+    [
+      ...reqUrl.pathname.replace(/\/github\/login$/, '').split('/'),
+      'github',
+      'oauth',
+      'callback',
+    ]
+      .filter(Boolean)
+      .join('/'),
+    reqUrl.origin
+  );
+  url.searchParams.set('redirect_uri', `${redirectUri}`);
   if (from === '/') {
     return redirect(url.toString());
   }

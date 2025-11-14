@@ -1,5 +1,4 @@
 import { useLocalizedStringFormatter } from '@react-aria/i18n';
-import { interpolateMessage } from './l10n/interpolate';
 import { isHotkey } from 'is-hotkey';
 import React, {
   useCallback,
@@ -262,20 +261,14 @@ function CollectionPageContent(props: CollectionPageContentProps) {
         title={stringFormatter.format('emptyCollectionTitle')}
         message={
           <>
-            {interpolateMessage(
-              stringFormatter.format('emptyCollectionMessage'),
-              {
-                createLink: (
-                  <TextLink
-                    href={`${props.basePath}/collection/${encodeURIComponent(
-                      props.collection
-                    )}/create`}
-                  >
-                    {stringFormatter.format('createFirstEntry')}
-                  </TextLink>
-                ),
-              }
-            )}
+            {stringFormatter.format('emptyCollectionMessage')}
+            <TextLink
+              href={`${props.basePath}/collection/${encodeURIComponent(
+                props.collection
+              )}/create`}
+            >
+              {stringFormatter.format('createFirstEntry')}
+            </TextLink>
           </>
         }
       />
@@ -547,7 +540,10 @@ function CollectionTable(
         {({ name, key, ...options }) =>
           key === STATUS ? (
             <Column key={key} isRowHeader allowsSorting {...options}>
-              <Icon aria-label={stringFormatter.format('status')} src={diffIcon} />
+              <Icon
+                aria-label={stringFormatter.format('status')}
+                src={diffIcon}
+              />
             </Column>
           ) : (
             <Column key={key} isRowHeader allowsSorting {...options}>

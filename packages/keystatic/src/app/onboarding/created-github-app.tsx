@@ -1,5 +1,4 @@
 import { useLocalizedStringFormatter } from '@react-aria/i18n';
-import { interpolateMessage } from '../l10n/interpolate';
 import { Flex } from '@keystar/ui/layout';
 import { Heading, Text } from '@keystar/ui/typography';
 import { GitHubConfig } from '../..';
@@ -21,15 +20,11 @@ export function CreatedGitHubApp(props: { config: GitHubConfig }) {
         gap="xlarge"
         maxWidth="scale.4600"
       >
-        <Heading>
-          {stringFormatter.format('createdGitHubAppHeading')}
-        </Heading>
+        <Heading>{stringFormatter.format('createdGitHubAppHeading')}</Heading>
         <Text>{stringFormatter.format('createdGitHubAppDescription')}</Text>
         <Text>
-          {interpolateMessage(
-            stringFormatter.format('createdGitHubAppRepo'),
-            { repo: <code>{serializeRepoConfig(props.config.storage.repo)}</code> }
-          )}
+          {stringFormatter.format('createdGitHubAppRepo')}
+          <code>{serializeRepoConfig(props.config.storage.repo)}</code>
         </Text>
         <InstallGitHubApp config={props.config} />
       </Flex>

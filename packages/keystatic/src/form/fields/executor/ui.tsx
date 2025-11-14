@@ -31,7 +31,9 @@ export function Executor(
       setResponse(result.response);
       props.onChange({ value: result.success });
     } catch (error) {
-      setResponse(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setResponse(
+        `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
       props.onChange({ value: false });
     } finally {
       setIsLoading(false);

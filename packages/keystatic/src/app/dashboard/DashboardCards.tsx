@@ -83,7 +83,10 @@ function renderItemOrGroup(itemOrGroup: ItemOrGroup) {
     return (
       <Flex gap="medium" alignItems="center">
         {changeElement}
-        <ActionButton aria-label={stringFormatter.format('add')} href={`${itemOrGroup.href}/create`}>
+        <ActionButton
+          aria-label={stringFormatter.format('add')}
+          href={`${itemOrGroup.href}/create`}
+        >
           <Icon src={plusIcon} />
         </ActionButton>
       </Flex>

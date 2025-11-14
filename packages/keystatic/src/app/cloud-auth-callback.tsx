@@ -47,7 +47,11 @@ export function KeystaticCloudAuthCallback({ config }: { config: Config }) {
           body: new URLSearchParams({
             code,
             client_id: project,
-            redirect_uri: `${window.location.origin}${(typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic'}/cloud/oauth/callback`,
+            redirect_uri: `${window.location.origin}${
+              typeof window !== 'undefined' && window.__KS_BASE_PATH__
+                ? window.__KS_BASE_PATH__
+                : '/keystatic'
+            }/cloud/oauth/callback`,
             code_verifier: storedState.code_verifier,
             grant_type: 'authorization_code',
           }).toString(),
@@ -73,7 +77,13 @@ export function KeystaticCloudAuthCallback({ config }: { config: Config }) {
             validUntil: Date.now() + parsed.expires_in * 1000,
           })
         );
-        router.push(`${(typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic'}/${storedState.from}`);
+        router.push(
+          `${
+            typeof window !== 'undefined' && window.__KS_BASE_PATH__
+              ? window.__KS_BASE_PATH__
+              : '/keystatic'
+          }/${storedState.from}`
+        );
       })().catch(error => {
         setError(error);
       });

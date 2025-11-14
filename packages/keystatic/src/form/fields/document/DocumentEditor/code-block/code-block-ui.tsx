@@ -87,7 +87,7 @@ export function CodeElement({
   children,
   element,
 }: RenderElementProps & { element: { type: 'code' } }) {
-  const stringFormatter = useLocalizedStringFormatter(l10nMessages)
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const editor = useSlateStatic();
   const triggerRef = useRef(null);
   const [inputValue, setInputValue] = useState(

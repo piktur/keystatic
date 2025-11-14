@@ -14,7 +14,12 @@ export function PresenceAvatars() {
       {[...awarenessStates.values()].map(val => {
         if (
           !val.user ||
-          router.href !== `${(typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic'}/branch/${val.branch}/${val.location}`
+          router.href !==
+            `${
+              typeof window !== 'undefined' && window.__KS_BASE_PATH__
+                ? window.__KS_BASE_PATH__
+                : '/keystatic'
+            }/branch/${val.branch}/${val.location}`
         ) {
           return null;
         }

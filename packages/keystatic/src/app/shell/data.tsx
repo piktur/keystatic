@@ -55,7 +55,15 @@ export function fetchLocalTree(sha: string) {
   if (treeCache.has(sha)) {
     return treeCache.get(sha)!;
   }
-  const promise = fetch(`${'/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')}/tree`, { headers: { 'no-cors': '1' } })
+  const promise = fetch(
+    `${
+      '/api' +
+      (typeof window !== 'undefined' && window.__KS_BASE_PATH__
+        ? window.__KS_BASE_PATH__
+        : '/keystatic')
+    }/tree`,
+    { headers: { 'no-cors': '1' } }
+  )
     .then(x => x.json())
     .then(async (entries: TreeEntry[]) => hydrateTreeCacheWithEntries(entries));
   treeCache.set(sha, promise);
@@ -368,9 +376,12 @@ export function GitHubAppShellProvider(props: {
   useEffect(() => {
     if (error?.response?.status === 401) {
       if (isGitHubConfig(props.config)) {
-        window.location.href = `${'/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')}/github/login?from=${router.params
-          .map(encodeURIComponent)
-          .join('/')}`;
+        window.location.href = `${
+          '/api' +
+          (typeof window !== 'undefined' && window.__KS_BASE_PATH__
+            ? window.__KS_BASE_PATH__
+            : '/keystatic')
+        }/github/login?from=${router.params.map(encodeURIComponent).join('/')}`;
       } else {
         redirectToCloudAuth(
           router.params.map(encodeURIComponent).join('/'),
@@ -386,7 +397,12 @@ export function GitHubAppShellProvider(props: {
           (err?.originalError as any)?.type === 'FORBIDDEN'
       )
     ) {
-      window.location.href = `${'/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')}/github/repo-not-found?from=${router.params
+      window.location.href = `${
+        '/api' +
+        (typeof window !== 'undefined' && window.__KS_BASE_PATH__
+          ? window.__KS_BASE_PATH__
+          : '/keystatic')
+      }/github/repo-not-found?from=${router.params
         .map(encodeURIComponent)
         .join('/')}`;
     }

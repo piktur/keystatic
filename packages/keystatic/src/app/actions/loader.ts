@@ -41,7 +41,9 @@ export async function loadCollectionActions(
   return actions;
 }
 
-async function loadActionModules(): Promise<Record<string, CollectionActionModule>> {
+async function loadActionModules(): Promise<
+  Record<string, CollectionActionModule>
+> {
   const modules: Record<string, CollectionActionModule> = {};
 
   if (!(window as any).__KS_ACTION_LOADER__) {

@@ -224,7 +224,9 @@ function CreateItemWrapper(props: {
   ) {
     return (
       <PageBody>
-        <Notice tone="caution">{stringFormatter.format('entryNotFound')}</Notice>
+        <Notice tone="caution">
+          {stringFormatter.format('entryNotFound')}
+        </Notice>
       </PageBody>
     );
   }
@@ -508,22 +510,19 @@ function CreateItemInner(props: {
 
   const isBelowDesktop = useMediaQuery(breakpointQueries.below.desktop);
 
-  const customActions = useFilteredCollectionActions(
-    props.collection,
-    {
-      schema,
-      currentState: props.state,
-      setState: (newState) => {
-        setValueToPreviewProps(newState, props.previewProps);
-      },
-      collectionConfig,
-      validateState: () => clientSideValidateProp(schema, props.state, slugInfo),
-      toast: {
-        positive: (message, options) => toastQueue.positive(message, options),
-        negative: (message, options) => toastQueue.critical(message, options),
-      },
-    }
-  );
+  const customActions = useFilteredCollectionActions(props.collection, {
+    schema,
+    currentState: props.state,
+    setState: newState => {
+      setValueToPreviewProps(newState, props.previewProps);
+    },
+    collectionConfig,
+    validateState: () => clientSideValidateProp(schema, props.state, slugInfo),
+    toast: {
+      positive: (message, options) => toastQueue.positive(message, options),
+      negative: (message, options) => toastQueue.critical(message, options),
+    },
+  });
 
   const allActions = useMemo(() => {
     const builtIn = [
@@ -561,14 +560,17 @@ function CreateItemInner(props: {
             const result = await action.handler({
               schema,
               currentState: props.state,
-              setState: (newState) => {
+              setState: newState => {
                 setValueToPreviewProps(newState, props.previewProps);
               },
               collectionConfig,
-              validateState: () => clientSideValidateProp(schema, props.state, slugInfo),
+              validateState: () =>
+                clientSideValidateProp(schema, props.state, slugInfo),
               toast: {
-                positive: (message, options) => toastQueue.positive(message, options),
-                negative: (message, options) => toastQueue.critical(message, options),
+                positive: (message, options) =>
+                  toastQueue.positive(message, options),
+                negative: (message, options) =>
+                  toastQueue.critical(message, options),
               },
             });
 
@@ -579,7 +581,9 @@ function CreateItemInner(props: {
             }
           } catch (error) {
             toastQueue.critical(
-              `Action failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+              `Action failed: ${
+                error instanceof Error ? error.message : 'Unknown error'
+              }`
             );
           }
         }
@@ -665,7 +669,10 @@ function CreateItemInner(props: {
             branchOid={baseCommit}
             onCreate={async newBranch => {
               {
-                const __ksBase = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
+                const __ksBase =
+                  typeof window !== 'undefined' && window.__KS_BASE_PATH__
+                    ? window.__KS_BASE_PATH__
+                    : '/keystatic';
                 router.push(
                   `${__ksBase}/branch/${encodeURIComponent(
                     newBranch
@@ -678,7 +685,10 @@ function CreateItemInner(props: {
                 const slug = getSlugFromState(collectionConfig, props.state);
 
                 {
-                  const __ksBase = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
+                  const __ksBase =
+                    typeof window !== 'undefined' && window.__KS_BASE_PATH__
+                      ? window.__KS_BASE_PATH__
+                      : '/keystatic';
                   router.push(
                     `${__ksBase}/branch/${encodeURIComponent(
                       newBranch

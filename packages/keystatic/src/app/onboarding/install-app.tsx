@@ -1,5 +1,4 @@
 import { useLocalizedStringFormatter } from '@react-aria/i18n';
-import { interpolateMessage } from '../l10n/interpolate';
 import { ActionButton, Button } from '@keystar/ui/button';
 import { Flex } from '@keystar/ui/layout';
 import { Notice } from '@keystar/ui/notice';
@@ -53,10 +52,9 @@ export function InstallGitHubApp(props: { config: GitHubConfig }) {
         <Notice tone="caution">
           {appSlugFromContext ? (
             <Text>
-              {interpolateMessage(
-                stringFormatter.format('installGitHubAppMissingSlug'),
-                { envName: <code>{appSlugFromContext.envName}</code> }
-              )}
+              {stringFormatter.format('installGitHubAppMissingSlug', {
+                envName: appSlugFromContext.envName,
+              })}
             </Text>
           ) : (
             <Text>

@@ -23,7 +23,10 @@ export function useCollectionActions(
         }
       })
       .catch(error => {
-        console.error(`Failed to load actions for collection: ${collectionName}`, error);
+        console.error(
+          `Failed to load actions for collection: ${collectionName}`,
+          error
+        );
         if (!cancelled) {
           setActions([]);
         }
@@ -39,7 +42,9 @@ export function useCollectionActions(
 
 export function useFilteredCollectionActions(
   collectionName: string,
-  filterContext: Parameters<NonNullable<CollectionAction['condition']>>[0] | null,
+  filterContext:
+    | Parameters<NonNullable<CollectionAction['condition']>>[0]
+    | null,
   enabled: boolean = true
 ): CollectionAction[] {
   const allActions = useCollectionActions(collectionName, enabled);
@@ -52,7 +57,10 @@ export function useFilteredCollectionActions(
       try {
         return action.condition(filterContext);
       } catch (error) {
-        console.error(`Error evaluating action condition for ${action.key}:`, error);
+        console.error(
+          `Error evaluating action condition for ${action.key}:`,
+          error
+        );
         return false;
       }
     });

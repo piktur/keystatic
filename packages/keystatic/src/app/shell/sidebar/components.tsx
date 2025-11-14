@@ -65,7 +65,6 @@ type MenuItem = {
 };
 type MenuSection = { key: string; label: string; children: MenuItem[] };
 
-
 // User controls
 // -----------------------------------------------------------------------------
 
@@ -120,7 +119,11 @@ export function UserMenu(user: {
         label: 'Log out',
         href:
           config.storage.kind === 'github'
-            ? (('/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')) + '/github/logout')
+            ? '/api' +
+              (typeof window !== 'undefined' && window.__KS_BASE_PATH__
+                ? window.__KS_BASE_PATH__
+                : '/keystatic') +
+              '/github/logout'
             : undefined,
         icon: logOutIcon,
       },
@@ -456,7 +459,9 @@ export function GitMenu() {
               }
             }}
           >
-            {stringFormatter.format('deleteBranchConfirmBody', { branch: currentBranch })}
+            {stringFormatter.format('deleteBranchConfirmBody', {
+              branch: currentBranch,
+            })}
           </AlertDialog>
         )}
       </DialogContainer>

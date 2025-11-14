@@ -211,7 +211,11 @@ export async function redirectToCloudAuth(from: string, config: Config) {
   url.searchParams.set('client_id', config.cloud.project);
   url.searchParams.set(
     'redirect_uri',
-    `${window.location.origin}${(typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic'}/cloud/oauth/callback`
+    `${window.location.origin}${
+      typeof window !== 'undefined' && window.__KS_BASE_PATH__
+        ? window.__KS_BASE_PATH__
+        : '/keystatic'
+    }/cloud/oauth/callback`
   );
   url.searchParams.set('response_type', 'code');
   url.searchParams.set('code_challenge_method', 'S256');

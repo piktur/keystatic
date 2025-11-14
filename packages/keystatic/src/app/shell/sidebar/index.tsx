@@ -358,11 +358,12 @@ function SidebarPreferences() {
   const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const { theme, setTheme } = useThemeContext();
 
-  const localeItems = useMemo(() =>
-    typedKeys(locales).map(key => ({
-      key,
-      label: locales[key].replace(/\s*\([^)]*\)\s*.*$/, ''),
-    })),
+  const localeItems = useMemo(
+    () =>
+      typedKeys(locales).map(key => ({
+        key,
+        label: locales[key].replace(/\s*\([^)]*\)\s*.*$/, ''),
+      })),
     []
   );
 
@@ -378,10 +379,16 @@ function SidebarPreferences() {
 
   return (
     <MenuTrigger align="end">
-      <ActionButton aria-label={stringFormatter.format('preferences')} prominence="low">
+      <ActionButton
+        aria-label={stringFormatter.format('preferences')}
+        prominence="low"
+      >
         <Icon src={moreHorizontalIcon} />
       </ActionButton>
-      <Menu aria-label={stringFormatter.format('preferences')} onAction={handleLocaleChange}>
+      <Menu
+        aria-label={stringFormatter.format('preferences')}
+        onAction={handleLocaleChange}
+      >
         <Section aria-label={stringFormatter.format('appearance')}>
           <MenuItem textValue={stringFormatter.format('appearance')}>
             <VStack gap="medium" padding="medium">
@@ -390,13 +397,14 @@ function SidebarPreferences() {
               </Text>
               <ActionGroup
                 aria-label={stringFormatter.format('theme')}
-                buttonLabelBehavior="hide"
+                buttonLabelBehavior="show"
                 density="compact"
                 items={THEME_OPTIONS}
-                overflowMode="wrap"
+                overflowMode="collapse"
                 selectedKeys={[theme]}
                 selectionMode="single"
                 onAction={key => setTheme(key as ColorScheme)}
+                width="100%"
               >
                 {item => (
                   <ActionGroupItem
@@ -411,7 +419,10 @@ function SidebarPreferences() {
             </VStack>
           </MenuItem>
         </Section>
-        <Section aria-label={stringFormatter.format('language')} items={localeItems}>
+        <Section
+          aria-label={stringFormatter.format('language')}
+          items={localeItems}
+        >
           {item => (
             <MenuItem key={item.key} textValue={item.label}>
               <Icon src={globeIcon} />
