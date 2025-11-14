@@ -382,7 +382,7 @@ export function ArrayFieldListView<Element extends ComponentSchema>(
       dragAndDropHooks={dragAndDropHooks}
       height={props.elements.length ? undefined : 'scale.2000'}
       selectionMode="none"
-      renderEmptyState={arrayFieldEmptyState}
+      renderEmptyState={() => <ArrayFieldEmptyState />}
       onAction={key => {
         const idx = props.elements.findIndex(x => x.key === key);
         if (idx === -1) return;
@@ -415,7 +415,7 @@ export function ArrayFieldListView<Element extends ComponentSchema>(
   );
 }
 
-function arrayFieldEmptyState() {
+function ArrayFieldEmptyState() {
   const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   return (
     <VStack

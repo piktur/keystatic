@@ -177,7 +177,7 @@ function MultiRelationshipListView(
         selectionMode="multiple"
         onSelectionChange={setSelectedKeys}
         selectedKeys={selectedKeys}
-        renderEmptyState={arrayFieldEmptyState}
+        renderEmptyState={() => <ArrayFieldEmptyState />}
         // density="compact"
         UNSAFE_className={css({
           borderRadius: tokenSchema.size.radius.regular,
@@ -219,7 +219,7 @@ function MultiRelationshipListView(
   );
 }
 
-function arrayFieldEmptyState() {
+function ArrayFieldEmptyState() {
   const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   return (
     <VStack
