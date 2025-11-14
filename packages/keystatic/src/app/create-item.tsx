@@ -55,6 +55,7 @@ import { setValueToPreviewProps } from '../form/get-value';
 import { copyEntryToClipboard, getPastedEntry } from './entry-clipboard';
 import { clipboardCopyIcon } from '@keystar/ui/icon/icons/clipboardCopyIcon';
 import { clipboardPasteIcon } from '@keystar/ui/icon/icons/clipboardPasteIcon';
+import { playIcon } from '@keystar/ui/icon/icons/playIcon';
 import { ActionGroup, Item } from '@keystar/ui/action-group';
 import { Text } from '@keystar/ui/typography';
 import { breakpointQueries, useMediaQuery } from '@keystar/ui/style';
@@ -507,6 +508,85 @@ function CreateItemInner(props: {
 
   const isBelowDesktop = useMediaQuery(breakpointQueries.below.desktop);
 
+  const customActions = useFilteredCollectionActions(
+    props.collection,
+    {
+      schema,
+      currentState: props.state,
+      setState: (newState) => {
+        setValueToPreviewProps(newState, props.previewProps);
+      },
+      collectionConfig,
+      validateState: () => clientSideValidateProp(schema, props.state, slugInfo),
+      toast: {
+        positive: (message, options) => toastQueue.positive(message, options),
+        negative: (message, options) => toastQueue.critical(message, options),
+      },
+    }
+  );
+
+  const allActions = useMemo(() => {
+    const builtIn = [
+      { key: 'reset', label: 'Reset', icon: historyIcon },
+      { key: 'copy', label: 'Copy entry', icon: clipboardCopyIcon },
+      { key: 'paste', label: 'Paste entry', icon: clipboardPasteIcon },
+    ];
+
+    const custom = customActions.map(action => ({
+      key: action.key,
+      label: action.label,
+      icon: action.icon || playIcon,
+    }));
+
+    return [...builtIn, ...custom];
+  }, [customActions]);
+
+  const handleAction = async (key: React.Key) => {
+    const keyStr = String(key);
+    switch (keyStr) {
+      case 'reset':
+        onReset();
+        setForceValidation(false);
+        break;
+      case 'copy':
+        onCopy();
+        break;
+      case 'paste':
+        await onPaste();
+        break;
+      default: {
+        const action = customActions.find(a => a.key === keyStr);
+        if (action) {
+          try {
+            const result = await action.handler({
+              schema,
+              currentState: props.state,
+              setState: (newState) => {
+                setValueToPreviewProps(newState, props.previewProps);
+              },
+              collectionConfig,
+              validateState: () => clientSideValidateProp(schema, props.state, slugInfo),
+              toast: {
+                positive: (message, options) => toastQueue.positive(message, options),
+                negative: (message, options) => toastQueue.critical(message, options),
+              },
+            });
+
+            if (result.success && result.message) {
+              toastQueue.positive(result.message);
+            } else if (!result.success) {
+              toastQueue.critical(result.error);
+            }
+          } catch (error) {
+            toastQueue.critical(
+              `Action failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            );
+          }
+        }
+      }
+    }
+  };
+
   return (
     <>
       <PageRoot containerWidth={containerWidthForEntryLayout(collectionConfig)}>
@@ -525,22 +605,9 @@ function CreateItemInner(props: {
             overflowMode="collapse"
             prominence="low"
             density="compact"
-            maxWidth={isBelowDesktop ? 'element.regular' : undefined} // force switch to action menu on small devices
-            items={menuActions}
-            onAction={key => {
-              switch (key) {
-                case 'reset':
-                  onReset();
-                  setForceValidation(false);
-                  break;
-                case 'copy':
-                  onCopy();
-                  break;
-                case 'paste':
-                  onPaste();
-                  break;
-              }
-            }}
+            maxWidth={isBelowDesktop ? 'element.regular' : undefined}
+            items={allActions}
+            onAction={handleAction}
           >
             {item => (
               <Item key={item.key} textValue={item.label}>
@@ -652,23 +719,5 @@ function CreateItemInner(props: {
     </>
   );
 }
-
-const menuActions = [
-  {
-    key: 'reset',
-    label: 'Reset',
-    icon: historyIcon,
-  },
-  {
-    key: 'copy',
-    label: 'Copy entry',
-    icon: clipboardCopyIcon,
-  },
-  {
-    key: 'paste',
-    label: 'Paste entry',
-    icon: clipboardPasteIcon,
-  },
-];
 
 export { CreateItemWrapper as CreateItem };

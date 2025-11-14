@@ -101,6 +101,7 @@ export function SidebarPanel() {
 }
 
 function SidebarHeader() {
+  let isLocalNoCloud = useIsLocalNoCloud();
   let { brandMark, brandName } = useBrand();
 
   return (

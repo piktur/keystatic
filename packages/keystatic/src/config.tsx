@@ -1,12 +1,38 @@
 import { ColorScheme } from '@keystar/ui/types';
-import { ReactElement } from 'react';
+import { ReactElement, ComponentType } from 'react';
 
 import { ComponentSchema, FormField, SlugFormField } from './form/api';
 import type { Locale } from './app/l10n/locales';
 import { RepoConfig } from './app/repo-config';
+import type { ToastOptions } from '@keystar/ui/toast';
 
 // Common
 // ----------------------------------------------------------------------------
+
+export type ActionContext<Schema extends Record<string, ComponentSchema>> = {
+  schema: Schema;
+  currentState: Record<string, unknown>;
+  setState: (newState: Record<string, unknown>) => void;
+  collectionConfig: Collection<Schema, any>;
+  validateState: () => boolean;
+  toast: {
+    positive: (message: string, options?: ToastOptions) => void;
+    negative: (message: string, options?: ToastOptions) => void;
+  };
+};
+
+export type ActionResult = 
+  | { success: true; message?: string; newState?: Record<string, unknown> }
+  | { success: false; error: string };
+
+export type CollectionAction<Schema extends Record<string, ComponentSchema> = any> = {
+  key: string;
+  label: string;
+  icon?: ReactElement | ComponentType | any;
+  description?: string;
+  handler: (context: ActionContext<Schema>) => Promise<ActionResult>;
+  condition?: (context: ActionContext<Schema>) => boolean;
+};
 
 export type DataFormat = 'json' | 'yaml';
 export type Format =
@@ -31,6 +57,7 @@ export type Collection<
   parseSlugForSort?: (slug: string) => string | number;
   slugField: SlugField;
   schema: Schema;
+  actions?: CollectionAction<Schema>[];
 };
 
 export type Singleton<Schema extends Record<string, ComponentSchema>> = {

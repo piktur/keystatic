@@ -5,11 +5,11 @@ import { basicFormFieldWithSimpleReaderParse } from '../utils';
 export function executor({
   label,
   description,
-  onInvokeAgent,
+  command,
 }: {
   label: string;
   description?: string;
-  onInvokeAgent: (input: string) => Promise<{ response: string; success: boolean }>;
+  command: (input: string) => Promise<{ response: string; success: boolean }>;
 }): BasicFormField<
   { value: FormFieldStoredValue },
   { value: FormFieldStoredValue },
@@ -23,7 +23,7 @@ export function executor({
           {...props}
           label={label}
           description={description}
-          onInvokeAgent={onInvokeAgent}
+          command={command}
         />
       );
     },

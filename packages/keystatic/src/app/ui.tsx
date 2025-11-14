@@ -75,13 +75,21 @@ function RedirectToBranch(props: { config: Config }) {
   useEffect(() => {
     if (error?.response?.status === 401) {
       if (props.config.storage.kind === 'github') {
-        window.location.href = `${'/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')}/github/login`;
+        window.location.href = `${
+          '/api' +
+          (typeof window !== 'undefined' && window.__KS_BASE_PATH__
+            ? window.__KS_BASE_PATH__
+            : '/keystatic')
+        }/github/login`;
       } else {
         redirectToCloudAuth('', props.config);
       }
     }
     if (data?.repository?.defaultBranchRef) {
-      const __ksBase = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
+      const __ksBase =
+        typeof window !== 'undefined' && window.__KS_BASE_PATH__
+          ? window.__KS_BASE_PATH__
+          : '/keystatic';
       push(
         `${__ksBase}/branch/${encodeURIComponent(
           data.repository.defaultBranchRef.name
@@ -95,7 +103,12 @@ function RedirectToBranch(props: { config: Config }) {
           'NOT_FOUND') ||
       (error?.graphQLErrors?.[0]?.originalError as any)?.type === 'FORBIDDEN'
     ) {
-      window.location.href = `${'/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic')}/github/repo-not-found`;
+      window.location.href = `${
+        '/api' +
+        (typeof window !== 'undefined' && window.__KS_BASE_PATH__
+          ? window.__KS_BASE_PATH__
+          : '/keystatic')
+      }/github/repo-not-found`;
     }
   }, [data, error, push, props.config]);
   return null;
@@ -144,11 +157,18 @@ function PageInner({ config }: { config: Config }) {
       return <Text>{stringFormatter.format('notFound')}</Text>;
     }
     branch = params[1];
-    basePath = `${(typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic'}/branch/${encodeURIComponent(branch)}`;
+    basePath = `${
+      typeof window !== 'undefined' && window.__KS_BASE_PATH__
+        ? window.__KS_BASE_PATH__
+        : '/keystatic'
+    }/branch/${encodeURIComponent(branch)}`;
     parsedParams = parseParamsWithoutBranch(params.slice(2));
   } else {
     parsedParams = parseParamsWithoutBranch(params);
-    basePath = (typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic';
+    basePath =
+      typeof window !== 'undefined' && window.__KS_BASE_PATH__
+        ? window.__KS_BASE_PATH__
+        : '/keystatic';
   }
   return wrapper(
     <AppShell config={config} currentBranch={branch || ''} basePath={basePath}>
@@ -238,7 +258,12 @@ function AuthWrapper(props: {
       return (
         <Flex justifyContent="center" alignItems="center" height="100vh">
           <Button
-            href={`${('/api' + ((typeof window !== 'undefined' && window.__KS_BASE_PATH__) ? window.__KS_BASE_PATH__ : '/keystatic'))}/github/login${
+            href={`${
+              '/api' +
+              (typeof window !== 'undefined' && window.__KS_BASE_PATH__
+                ? window.__KS_BASE_PATH__
+                : '/keystatic')
+            }/github/login${
               router.params.length
                 ? `?${new URLSearchParams({
                     from: router.params.map(encodeURIComponent).join('/'),
@@ -293,17 +318,18 @@ function RedirectToLoopback(props: { children: ReactNode }) {
 export function Keystatic(props: {
   config: Config;
   appSlug?: { envName: string; value: string | undefined };
-  basePath?: string
+  basePath?: string;
 }) {
   if (props.config.storage.kind === 'github') {
     assertValidRepoConfig(props.config.storage.repo);
   }
-
-  const locale = props.config.locale || new URL(window.location.href).searchParams.get('locale') || 'en-US';
-  props.config.locale = locale in locales ? locale as keyof typeof locales : 'en-US';
-
+  const locale =
+    props.config.locale ||
+    new URL(window.location.href).searchParams.get('locale') ||
+    'en-US';
+  props.config.locale =
+    locale in locales ? (locale as keyof typeof locales) : 'en-US';
   window.__KS_BASE_PATH__ = props.basePath;
-
   return (
     <ClientOnly>
       <RedirectToLoopback>
