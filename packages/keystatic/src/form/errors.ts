@@ -1,10 +1,10 @@
 import { getSlugFromState } from '../app/utils';
 import { ComponentSchema } from './api';
+import { toFormattedFormDataError } from './error-formatting';
+import { ReadonlyPropPath } from './fields/document/DocumentEditor/component-blocks/utils';
 import { SlugFieldInfo } from './fields/text/path-slug-context';
 import { PropValidationError } from './parse-props';
-import { ReadonlyPropPath } from './fields/document/DocumentEditor/component-blocks/utils';
 import { validateArrayLength } from './validate-array-length';
-import { toFormattedFormDataError } from './error-formatting';
 
 export function clientSideValidateProp(
   schema: ComponentSchema,
@@ -20,7 +20,7 @@ export function clientSideValidateProp(
   }
 }
 
-function validateValueWithSchema(
+export function validateValueWithSchema(
   schema: ComponentSchema,
   value: any,
   slugField: SlugFieldInfo | undefined,

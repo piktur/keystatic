@@ -1,7 +1,7 @@
 export {
   BlockWrapper,
   NotEditable,
-  ToolbarSeparator,
+  ToolbarSeparator
 } from '#component-block-primitives';
 export { collection, config, singleton } from './config';
 export type {
@@ -15,6 +15,8 @@ export type {
   GitHubConfig,
   Glob,
   LocalConfig,
-  Singleton,
+  Singleton
 } from './config';
 export * from './form/api';
+export { validateValueWithSchema } from './form/errors';
+
