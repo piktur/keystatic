@@ -92,6 +92,8 @@ import { ErrorBoundary } from './error-boundary';
 import { copyEntryToClipboard, getPastedEntry } from './entry-clipboard';
 import { setValueToPreviewProps } from '../form/get-value';
 import { toastQueue } from '@keystar/ui/toast';
+import { useFilteredCollectionActions } from './actions/useCollectionActions';
+import { playIcon } from '@keystar/ui/icon/icons/playIcon';
 
 type ItemPageProps = {
   collection: string;
@@ -249,6 +251,7 @@ function ItemPageInner(
       <ItemPageShell
         headerActions={
           <HeaderActions
+            collection={collection}
             formID={formID}
             isLoading={updateResult.kind === 'loading'}
             hasChanged={props.hasChanged}
@@ -259,6 +262,9 @@ function ItemPageInner(
             onReset={props.onReset}
             viewHref={viewHref}
             previewHref={previewHref}
+            state={props.state}
+            previewProps={props.previewProps}
+            slugInfo={slugInfo}
           />
         }
         {...props}
@@ -546,6 +552,7 @@ function CollabItemPage(props: ItemPageProps & { map: Y.Map<any> }) {
 }
 
 function HeaderActions(props: {
+  collection: string;
   formID: string;
   hasChanged: boolean;
   isLoading: boolean;
@@ -556,8 +563,15 @@ function HeaderActions(props: {
   onPaste: () => void;
   previewHref?: string;
   viewHref?: string;
+  state: Record<string, unknown>;
+  previewProps: GenericPreviewProps<
+    ObjectField<Record<string, ComponentSchema>>,
+    undefined
+  >;
+  slugInfo: ReturnType<typeof useSlugFieldInfo>;
 }) {
   let {
+    collection,
     formID,
     hasChanged,
     isLoading,
@@ -568,11 +582,30 @@ function HeaderActions(props: {
     onPaste,
     previewHref,
     viewHref,
+    state,
+    previewProps,
+    slugInfo,
   } = props;
   const isBelowDesktop = useMediaQuery(breakpointQueries.below.desktop);
   const stringFormatter = useLocalizedStringFormatter(localizedMessages);
   const [deleteAlertIsOpen, setDeleteAlertOpen] = useState(false);
   const [duplicateAlertIsOpen, setDuplicateAlertOpen] = useState(false);
+
+  const { collectionConfig, schema } = useCollection(collection);
+
+  const customActions = useFilteredCollectionActions(collection, {
+    schema,
+    currentState: state,
+    setState: newState => {
+      setValueToPreviewProps(newState, previewProps);
+    },
+    collectionConfig,
+    validateState: () => clientSideValidateProp(schema, state, slugInfo),
+    toast: {
+      positive: (message, options) => toastQueue.positive(message, options),
+      negative: (message, options) => toastQueue.critical(message, options),
+    },
+  });
   const menuActions = useMemo(() => {
     type ActionType = {
       icon: ReactElement;
@@ -631,8 +664,16 @@ function HeaderActions(props: {
       });
     }
 
-    return items;
-  }, [previewHref, viewHref, stringFormatter]);
+    const custom = customActions
+      .filter(action => !action.component)
+      .map(action => ({
+        key: action.key,
+        label: action.label,
+        icon: action.icon || playIcon,
+      }));
+
+    return [...items, ...custom];
+  }, [previewHref, viewHref, stringFormatter, customActions]);
 
   const indicatorElement = (() => {
     if (isLoading) {
@@ -664,10 +705,72 @@ function HeaderActions(props: {
     return null;
   })();
 
+  const customComponentActions = useMemo(
+    () => customActions.filter(action => action.component),
+    [customActions]
+  );
+
   return (
     <Flex alignItems="center" gap={{ mobile: 'small', tablet: 'regular' }}>
       <PresenceAvatars />
       {indicatorElement}
+      {customComponentActions.map(action => {
+        if (!action.component) return null;
+        const ActionComponent = action.component;
+        return (
+          <ActionComponent
+            key={action.key}
+            context={{
+              schema,
+              currentState: state,
+              setState: newState => {
+                setValueToPreviewProps(newState, previewProps);
+              },
+              collectionConfig,
+              validateState: () =>
+                clientSideValidateProp(schema, state, slugInfo),
+              toast: {
+                positive: (message, options) =>
+                  toastQueue.positive(message, options),
+                negative: (message, options) =>
+                  toastQueue.critical(message, options),
+              },
+            }}
+            onAction={async () => {
+              try {
+                const result = await action.handler({
+                  schema,
+                  currentState: state,
+                  setState: newState => {
+                    setValueToPreviewProps(newState, previewProps);
+                  },
+                  collectionConfig,
+                  validateState: () =>
+                    clientSideValidateProp(schema, state, slugInfo),
+                  toast: {
+                    positive: (message, options) =>
+                      toastQueue.positive(message, options),
+                    negative: (message, options) =>
+                      toastQueue.critical(message, options),
+                  },
+                });
+
+                if (result.success && result.message) {
+                  toastQueue.positive(result.message);
+                } else if (!result.success) {
+                  toastQueue.critical(result.error);
+                }
+              } catch (error) {
+                toastQueue.critical(
+                  `Action failed: ${
+                    error instanceof Error ? error.message : 'Unknown error'
+                  }`
+                );
+              }
+            }}
+          />
+        );
+      })}
       <ActionGroup
         buttonLabelBehavior="hide"
         overflowMode="collapse"
@@ -697,6 +800,43 @@ function HeaderActions(props: {
                 onDuplicate();
               }
               break;
+            default: {
+              const action = customActions.find(a => a.key === key);
+              if (action) {
+                (async () => {
+                  try {
+                    const result = await action.handler({
+                      schema,
+                      currentState: state,
+                      setState: newState => {
+                        setValueToPreviewProps(newState, previewProps);
+                      },
+                      collectionConfig,
+                      validateState: () =>
+                        clientSideValidateProp(schema, state, slugInfo),
+                      toast: {
+                        positive: (message, options) =>
+                          toastQueue.positive(message, options),
+                        negative: (message, options) =>
+                          toastQueue.critical(message, options),
+                      },
+                    });
+
+                    if (result.success && result.message) {
+                      toastQueue.positive(result.message);
+                    } else if (!result.success) {
+                      toastQueue.critical(result.error);
+                    }
+                  } catch (error) {
+                    toastQueue.critical(
+                      `Action failed: ${
+                        error instanceof Error ? error.message : 'Unknown error'
+                      }`
+                    );
+                  }
+                })();
+              }
+            }
           }
         }}
       >
