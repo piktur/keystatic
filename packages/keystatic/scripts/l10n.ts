@@ -1,6 +1,6 @@
-import fs from 'fs/promises';
-import path from 'path';
 import { compileString } from '@internationalized/string-compiler';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 const localesDir = 'src/app/l10n';
 (async () => {

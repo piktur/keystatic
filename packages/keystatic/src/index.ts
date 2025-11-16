@@ -18,5 +18,4 @@ export type {
   Singleton
 } from './config';
 export * from './form/api';
-export { validateValueWithSchema } from './form/errors';
 

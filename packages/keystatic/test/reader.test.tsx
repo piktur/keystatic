@@ -1,5 +1,5 @@
 /** @jest-environment node */
-import path from 'path';
+import path from 'node:path';
 import { component, fields, collection, config } from '../src';
 import { EntryWithResolvedLinkedFiles, createReader } from '../src/reader';
 import { expect, test } from '@jest/globals';

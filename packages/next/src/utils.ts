@@ -1,8 +1,8 @@
 import { Config } from '@keystatic/core';
 import { getAllowedDirectories } from '@keystatic/core/api/utils';
-import path from 'path';
-import fs from 'fs/promises';
-import { createHash } from 'crypto';
+import { createHash } from 'node:crypto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 type DirKeyComponent = null | [string, DirKeyComponent[] | number];
 

@@ -1,5 +1,5 @@
 import glob from 'fast-glob';
-import fs from 'fs';
+import fs from 'node:fs';
 import StyleDictionary from 'style-dictionary';
 
 const { fileHeader } = StyleDictionary.formatHelpers;

@@ -1,10 +1,10 @@
 import { assertNever } from 'emery';
+import { FormField, FormFieldStoredValue, JsonYamlValue } from '..';
 import { ComponentSchema } from './api';
 import { ReadonlyPropPath } from './fields/document/DocumentEditor/component-blocks/utils';
-import { FormField, FormFieldStoredValue, JsonYamlValue } from '..';
 import { FieldDataError } from './fields/error';
-import { validateArrayLength } from './validate-array-length';
 import { getInitialPropsValue } from './initial-values';
+import { validateArrayLength } from './validate-array-length';
 
 export class PropValidationError extends Error {
   path: ReadonlyPropPath;

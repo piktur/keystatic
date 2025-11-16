@@ -1,6 +1,6 @@
 import Markdoc, { Node, Tag, ValidateError } from '@markdoc/markdoc';
+import { assert } from 'emery';
 import { isNonEmptyArray } from 'emery/guards';
-import { assert } from 'emery/assertions';
 import { markdocConfig } from '../markdoc';
 
 class MarkdocFailure extends Error {

@@ -1,8 +1,8 @@
 import { transform } from '@svgr/core';
-import { optimize } from 'svgo';
 import _rawIcons from 'lucide-static';
-import fs from 'fs/promises';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { optimize } from 'svgo';
 
 const seenIcons = new Set<string>();
 

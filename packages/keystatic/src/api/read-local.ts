@@ -1,15 +1,15 @@
-import fs from 'fs/promises';
-import path from 'path';
+import ignore from 'ignore';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import {
   getCollectionPath,
   getSingletonFormat,
   getSingletonPath,
 } from '../app/path-utils';
-import { updateTreeWithChanges, blobSha } from '../app/trees';
-import { Config } from '../config';
 import { getDirectoriesForTreeKey } from '../app/tree-key';
+import { blobSha, updateTreeWithChanges } from '../app/trees';
+import { Config } from '../config';
 import { fields } from '../form/api';
-import ignore from 'ignore';
 
 async function readDirEntries(dir: string) {
   let entries;

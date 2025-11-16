@@ -1,9 +1,9 @@
-import path from 'path';
-import { categories, Category } from './categories';
+import { createReader, Reader } from '@keystatic/core/reader';
+import path from 'node:path';
 import { SidebarItem } from '../components/sidebar';
 import { SidebarLink } from '../components/sidebar/types';
-import { createReader, Reader } from '@keystatic/core/reader';
 import keystaticConfig from '../keystatic.config';
+import { categories, Category } from './categories';
 
 export const projectDir = path.resolve(process.cwd(), '..');
 

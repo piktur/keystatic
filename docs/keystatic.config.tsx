@@ -9,7 +9,7 @@ import { Badge } from '@keystar/ui/badge';
 import { Flex } from '@keystar/ui/layout';
 import { tagIcon } from '@keystar/ui/icon/icons/tagIcon';
 import { isNonEmptyArray } from 'emery/guards';
-import { assert } from 'emery/assertions';
+import { assert } from 'emery';
 import Markdoc, { Config, Node, ValidateError } from '@markdoc/markdoc';
 
 export const components = {

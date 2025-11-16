@@ -1,8 +1,8 @@
-import { assertNever } from 'emery/assertions';
-import { ComponentSchema } from './api';
-import * as Y from 'yjs';
+import { assertNever } from 'emery';
 import { Awareness } from 'y-protocols/awareness.js';
-import { setKeysForArrayValue, getKeysForArrayValue } from './initial-values';
+import * as Y from 'yjs';
+import { ComponentSchema } from './api';
+import { getKeysForArrayValue, setKeysForArrayValue } from './initial-values';
 
 export function getYjsValFromParsedValue(
   schema: ComponentSchema,

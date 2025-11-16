@@ -1,8 +1,8 @@
 /** @jest-environment node */
 import { expect, test } from '@jest/globals';
+import { webcrypto } from 'node:crypto';
 import { sha1 as sha1Node } from './node';
 import { sha1 as sha1Webcrypto } from './webcrypto';
-import { webcrypto } from 'crypto';
 
 // globalThis.crypto is only set in newer node versions
 if (!globalThis.crypto) {
