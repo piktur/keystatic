@@ -531,14 +531,21 @@ function CreateItemInner(props: {
       { key: 'paste', label: 'Paste entry', icon: clipboardPasteIcon },
     ];
 
-    const custom = customActions.map(action => ({
-      key: action.key,
-      label: action.label,
-      icon: action.icon || playIcon,
-    }));
+    const custom = customActions
+      .filter(action => !action.component)
+      .map(action => ({
+        key: action.key,
+        label: action.label,
+        icon: action.icon || playIcon,
+      }));
 
     return [...builtIn, ...custom];
   }, [customActions]);
+
+  const customComponentActions = useMemo(
+    () => customActions.filter(action => action.component),
+    [customActions]
+  );
 
   const handleAction = async (key: React.Key) => {
     const keyStr = String(key);
@@ -604,6 +611,63 @@ function CreateItemInner(props: {
               size="small"
             />
           )}
+          {customComponentActions.map(action => {
+            if (!action.component) return null;
+            const ActionComponent = action.component;
+            return (
+              <ActionComponent
+                key={action.key}
+                context={{
+                  schema,
+                  currentState: props.state,
+                  setState: newState => {
+                    setValueToPreviewProps(newState, props.previewProps);
+                  },
+                  collectionConfig,
+                  validateState: () =>
+                    clientSideValidateProp(schema, props.state, slugInfo),
+                  toast: {
+                    positive: (message, options) =>
+                      toastQueue.positive(message, options),
+                    negative: (message, options) =>
+                      toastQueue.critical(message, options),
+                  },
+                }}
+                onAction={async () => {
+                  try {
+                    const result = await action.handler({
+                      schema,
+                      currentState: props.state,
+                      setState: newState => {
+                        setValueToPreviewProps(newState, props.previewProps);
+                      },
+                      collectionConfig,
+                      validateState: () =>
+                        clientSideValidateProp(schema, props.state, slugInfo),
+                      toast: {
+                        positive: (message, options) =>
+                          toastQueue.positive(message, options),
+                        negative: (message, options) =>
+                          toastQueue.critical(message, options),
+                      },
+                    });
+
+                    if (result.success && result.message) {
+                      toastQueue.positive(result.message);
+                    } else if (!result.success) {
+                      toastQueue.critical(result.error);
+                    }
+                  } catch (error) {
+                    toastQueue.critical(
+                      `Action failed: ${
+                        error instanceof Error ? error.message : 'Unknown error'
+                      }`
+                    );
+                  }
+                }}
+              />
+            );
+          })}
           <ActionGroup
             buttonLabelBehavior="hide"
             overflowMode="collapse"

@@ -1,5 +1,5 @@
 import { ColorScheme } from '@keystar/ui/types';
-import { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 
 import { ComponentSchema, FormField, SlugFormField } from './form/api';
 import type { Locale } from './app/l10n/locales';
@@ -34,6 +34,10 @@ export type CollectionAction<
   description?: string;
   handler: (context: ActionContext<Schema>) => Promise<ActionResult>;
   condition?: (context: ActionContext<Schema>) => boolean;
+  component?: (props: {
+    context: ActionContext<Schema>;
+    onAction: () => Promise<void>;
+  }) => ReactElement | ReactNode;
 };
 
 export type DataFormat = 'json' | 'yaml';

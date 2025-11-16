@@ -1,12 +1,12 @@
-import path from 'path';
-import fs from 'fs/promises';
-import nonPromiseFs from 'fs';
-import outdent from 'outdent';
-import fastGlob from 'fast-glob';
-import onExit from 'signal-exit';
-import { tmpdir } from 'os';
-import { randomUUID } from 'crypto';
 import { expect } from '@jest/globals';
+import fastGlob from 'fast-glob';
+import { randomUUID } from 'node:crypto';
+import nonPromiseFs from 'node:fs';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { tmpdir } from 'os';
+import outdent from 'outdent';
+import onExit from 'signal-exit';
 
 export const js = outdent;
 export const ts = outdent;

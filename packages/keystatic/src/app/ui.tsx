@@ -353,3 +353,6 @@ function ClientOnly(props: { children: ReactNode }) {
   if (!mounted) return null;
   return props.children;
 }
+
+export type { KeystaticFormProps, SerializedFormData } from './public-form';
+export { KeystaticForm } from './public-form';

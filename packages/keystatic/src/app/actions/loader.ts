@@ -7,6 +7,7 @@ export type CollectionActionModule = {
   description?: string;
   handler: CollectionAction['handler'];
   condition?: CollectionAction['condition'];
+  component?: CollectionAction['component'];
 };
 
 let actionModulesCache: Record<string, CollectionActionModule> | null = null;
@@ -34,6 +35,7 @@ export async function loadCollectionActions(
         description: module.description,
         handler: module.handler,
         condition: module.condition,
+        component: module.component,
       });
     }
   }

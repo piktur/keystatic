@@ -1,15 +1,15 @@
+import { format, parse } from '#markdoc';
 import { expect, test } from '@jest/globals';
-import { parse, format } from '#markdoc';
-import path from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'url';
+import keystaticConfig, {
+  components,
+} from '../../../../../../../../docs/keystatic.config';
 import { createReader } from '../../../../../reader';
 import { editorOptionsToConfig } from '../../config';
 import { markdocToProseMirror } from '../markdoc/parse';
 import { proseMirrorToMarkdoc } from '../markdoc/serialize';
 import { createEditorSchema } from '../schema';
-import keystaticConfig, {
-  components,
-} from '../../../../../../../../docs/keystatic.config';
-import { fileURLToPath } from 'url';
 
 test('docs serialisation', async () => {
   const docsPath = path.resolve(

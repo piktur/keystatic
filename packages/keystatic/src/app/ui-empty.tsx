@@ -11,3 +11,5 @@ export function Keystatic(props: {
   }
   return null;
 }
+
+export { Keystatic as KeystaticForm };
