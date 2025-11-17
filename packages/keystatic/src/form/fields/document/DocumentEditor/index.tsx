@@ -7,6 +7,8 @@ import {
   useMemo,
   createContext,
 } from 'react';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '#l10n';
 import { isHotkey } from 'is-hotkey';
 import {
   Editor,
@@ -449,6 +451,7 @@ function getPrismTokenLength(token: Prism.Token | string): number {
 }
 
 export function DocumentEditorEditable(props: EditableProps) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const containerSize = useContentPanelSize();
   const entryLayoutPane = useEntryLayoutSplitPaneContext();
   const editor = useSlate();
@@ -463,7 +466,7 @@ export function DocumentEditorEditable(props: EditableProps) {
     <ActiveBlockPopoverProvider editor={editor}>
       <Prose size={entryLayoutPane === 'main' ? 'medium' : 'regular'}>
         <Editable
-          placeholder='Start writing or press "/" for commands...'
+          placeholder={stringFormatter.format('documentEditorPlaceholder')}
           decorate={useCallback(
             ([node, path]: NodeEntry<Node>) => {
               let decorations: Range[] = [];

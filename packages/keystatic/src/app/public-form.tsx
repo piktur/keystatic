@@ -356,11 +356,12 @@ function KeystaticFormInner({
                       marginTop="xlarge"
                       UNSAFE_className="print-hide"
                     >
-                      <ButtonGroup>
+                      <ButtonGroup UNSAFE_className="print-hide">
                         <Button
                           type="submit"
                           prominence="high"
                           isDisabled={isSubmitting}
+                          UNSAFE_className="print-hide"
                         >
                           {isSubmitting ? (
                             <>
@@ -377,6 +378,7 @@ function KeystaticFormInner({
                         <Button
                           onPress={() => window.print()}
                           isDisabled={isSubmitting}
+                          UNSAFE_className="print-hide"
                         >
                           <Icon src={printerIcon} />
                           <Text>{stringFormatter.format('print')}</Text>
