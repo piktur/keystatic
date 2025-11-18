@@ -6,10 +6,12 @@ import { SelectFieldInput } from '#field-ui/select';
 export function select<const Option extends { label: string; value: string }>({
   label,
   options,
+  combobox,
   defaultValue,
   description,
 }: {
   label: string;
+  combobox: boolean;
   options: readonly Option[];
   defaultValue: Option['value'];
   description?: string;
@@ -31,6 +33,7 @@ export function select<const Option extends { label: string; value: string }>({
             label={label}
             options={options}
             description={description}
+            combobox={combobox}
             {...props}
           />
         );

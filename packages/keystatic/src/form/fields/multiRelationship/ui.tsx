@@ -86,17 +86,15 @@ export function MultiRelationshipInput(
       >
         {item => <Item key={item.slug}>{item.slug}</Item>}
       </Combobox>
-      {true ? (
-        <MultiRelationshipListView
-          autoFocus={props.autoFocus}
-          forceValidation={props.forceValidation}
-          onChange={value => {
-            props.onChange(value.map(x => x.key));
-          }}
-          elements={valAsObjects}
-          aria-label={props.label}
-        />
-      ) : null}
+      <MultiRelationshipListView
+        autoFocus={props.autoFocus}
+        forceValidation={props.forceValidation}
+        onChange={value => {
+          props.onChange(value.map(x => x.key));
+        }}
+        elements={valAsObjects}
+        aria-label={props.label}
+      />
     </VStack>
   );
 }
@@ -178,7 +176,7 @@ function MultiRelationshipListView(
         onSelectionChange={setSelectedKeys}
         selectedKeys={selectedKeys}
         renderEmptyState={() => <ArrayFieldEmptyState />}
-        // density="compact"
+        density="compact"
         UNSAFE_className={css({
           borderRadius: tokenSchema.size.radius.regular,
         })}

@@ -14,7 +14,7 @@ import { monitorIcon } from '@keystar/ui/icon/icons/monitorIcon';
 import { globeIcon } from '@keystar/ui/icon/icons/globeIcon';
 import { moreHorizontalIcon } from '@keystar/ui/icon/icons/moreHorizontalIcon';
 import { Menu, MenuTrigger, Item, Section } from '@keystar/ui/menu';
-import { useMediaQuery } from '@keystar/ui/style';
+import { breakpointQueries, useMediaQuery } from '@keystar/ui/style';
 import { Config } from '../config';
 import { fields } from '../form/api';
 import { createGetPreviewProps } from '../form/preview-props';
@@ -32,6 +32,7 @@ import { ScrollView } from './shell/primitives';
 import { SplitView, SplitPanePrimary, SplitPaneSecondary } from '@keystar/ui/split-view';
 import { useTheme, useThemeContext, ThemeProvider } from './shell/theme';
 import { locales } from './l10n/locales';
+import './public-form.css';
 
 // Polyfill for crypto.randomUUID
 const generateUUID = () => {
@@ -186,6 +187,8 @@ function KeystaticFormInner({
 }: KeystaticFormProps) {
   const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const collectionConfig = config.collections![collectionKey];
+  const isBelowDesktop = useMediaQuery(breakpointQueries.below.desktop);
+
 
   if (!collectionConfig) {
     throw new Error(`Collection "${collectionKey}" not found in config`);
@@ -273,38 +276,6 @@ function KeystaticFormInner({
 
   return (
     <ConfigContext.Provider value={config}>
-      <style>{`
-        @media print {
-          @page {
-            margin: 1.5cm;
-            size: A4;
-          }
-
-          body {
-            print-color-adjust: exact;
-            -webkit-print-color-adjust: exact;
-          }
-
-          .print-hide {
-            display: none !important;
-          }
-
-          .print-page-break {
-            page-break-before: always;
-            break-before: page;
-          }
-
-          .print-avoid-break {
-            page-break-inside: avoid;
-            break-inside: avoid;
-          }
-
-          * {
-            background: none !important;
-            background-color: transparent !important;
-          }
-        }
-      `}</style>
       <PageRoot containerWidth="medium">
         <Flex direction="column" backgroundColor="canvas" height="100vh">
         <Box borderBottom="muted" elementType="header" flexShrink={0} UNSAFE_className="print-hide">
@@ -391,30 +362,32 @@ function KeystaticFormInner({
               </PageContainer>
             </ScrollView>
           </SplitPaneSecondary>
-          <SplitPanePrimary UNSAFE_className="print-hide">
-            <ScrollView>
-              <Box padding={{ mobile: 'medium', tablet: 'xlarge', desktop: 'xxlarge' }}>
-                <Flex direction="column" gap="medium">
-                  <Heading size="small">JSON Preview</Heading>
-                  <Box
-                    backgroundColor="surface"
-                    padding="medium"
-                    borderRadius="medium"
-                    UNSAFE_style={{
-                      fontFamily: 'monospace',
-                      fontSize: '12px',
-                      whiteSpace: 'pre-wrap',
-                      wordBreak: 'break-all',
-                      overflow: 'auto',
-                      maxHeight: '80vh'
-                    }}
-                  >
-                    {serializedPreview}
-                  </Box>
-                </Flex>
-              </Box>
-            </ScrollView>
-          </SplitPanePrimary>
+          {!isBelowDesktop ? (
+            <SplitPanePrimary UNSAFE_className="print-hide">
+              <ScrollView>
+                <Box padding={{ mobile: 'medium', tablet: 'xlarge', desktop: 'xxlarge' }}>
+                  <Flex direction="column" gap="medium">
+                    <Heading size="small">JSON Preview</Heading>
+                    <Box
+                      backgroundColor="surface"
+                      padding="medium"
+                      borderRadius="medium"
+                      UNSAFE_style={{
+                        fontFamily: 'monospace',
+                        fontSize: '12px',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-all',
+                        overflow: 'auto',
+                        maxHeight: '80vh'
+                      }}
+                    >
+                      {serializedPreview}
+                    </Box>
+                  </Flex>
+                </Box>
+              </ScrollView>
+            </SplitPanePrimary>
+          ) : <></>}
         </SplitView>
         </Flex>
       </PageRoot>

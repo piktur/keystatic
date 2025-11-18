@@ -7,11 +7,13 @@ export function multiselect<
   const Option extends { label: string; value: string },
 >({
   label,
+  combobox,
   options,
   defaultValue = [],
   description,
 }: {
   label: string;
+  combobox: boolean;
   options: readonly Option[];
   defaultValue?: readonly Option['value'][];
   description?: string;
@@ -28,6 +30,7 @@ export function multiselect<
             label={label}
             description={description}
             options={options}
+            combobox={combobox}
             {...props}
           />
         );

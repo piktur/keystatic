@@ -1,5 +1,8 @@
 import { Picker, Item } from '@keystar/ui/picker';
+import { Combobox } from '@keystar/ui/combobox';
+import { Item as ComboboxItem } from '@react-stately/collections';
 import { useFieldSpan } from '../context';
+import { useReducer, useMemo } from 'react';
 
 export function SelectFieldInput<Value extends string>(props: {
   value: Value;
@@ -8,8 +11,34 @@ export function SelectFieldInput<Value extends string>(props: {
   label: string;
   description?: string;
   options: readonly { label: string; value: Value }[];
+  combobox?: boolean;
 }) {
   let fieldSpan = useFieldSpan();
+  const [, onBlur] = useReducer(() => true, false);
+  const items = useMemo(() => {
+    return props.options.map(opt => ({ key: opt.value, label: opt.label }));
+  }, [props.options]);
+
+  if (props.combobox) {
+    return (
+      <Combobox
+        label={props.label}
+        description={props.description}
+        selectedKey={props.value}
+        onSelectionChange={key => {
+          if (typeof key === 'string') {
+            props.onChange(key as Value);
+          }
+        }}
+        onBlur={onBlur}
+        autoFocus={props.autoFocus}
+        defaultItems={items}
+        width="auto"
+      >
+        {item => <ComboboxItem key={item.key}>{item.label}</ComboboxItem>}
+      </Combobox>
+    );
+  }
 
   return (
     <Picker

@@ -1,0 +1,70 @@
+/*
+  Print stylesheet compatible with window.print(). Form IS NOT fillable.
+  This is the simplest viable solution before we consider React to PDF conversion.
+*/
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  * {
+    background: none !important;
+    background-color: transparent !important;
+    /* Ensure full form visible in print selection */
+    overflow: visible !important;
+    scrollbar-width: none !important;
+  }
+
+  form {
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
+  form > * {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Reset height constraints for print */
+  body, html, #root, main {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+
+  /* Auto page breaks for form fields - avoid breaking inside a field */
+  label,
+  [role="group"],
+  [role="grid"],
+  fieldset {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    overflow: hidden !important;
+  }
+
+  /* Allow natural page breaks in editor content */
+  [data-slate-editor],
+  [contenteditable="true"] {
+    max-height: none !important;
+  }
+
+  .print-hide {
+    display: none !important;
+  }
+
+  .print-page-break {
+    page-break-before: always;
+    break-before: page;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}

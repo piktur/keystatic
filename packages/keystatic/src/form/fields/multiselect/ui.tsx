@@ -1,19 +1,90 @@
+import { Item } from '@react-stately/collections';
+import { ItemDropTarget, Selection } from '@react-types/shared';
+import { useReducer, useMemo, useState, Key, useId } from 'react';
+
+import { ActionBar, ActionBarContainer } from '@keystar/ui/action-bar';
 import { Checkbox } from '@keystar/ui/checkbox';
+import { Combobox } from '@keystar/ui/combobox';
+import { move, useDragAndDrop } from '@keystar/ui/drag-and-drop';
 import { FieldLabel } from '@keystar/ui/field';
-import { Flex } from '@keystar/ui/layout';
-import { useId } from 'react';
-import { FormFieldInputProps } from '../../api';
+import { Icon } from '@keystar/ui/icon';
+import { trash2Icon } from '@keystar/ui/icon/icons/trash2Icon';
+import { Flex, VStack } from '@keystar/ui/layout';
+import { ListView } from '@keystar/ui/list-view';
+import { css, tokenSchema } from '@keystar/ui/style';
 import { Text } from '@keystar/ui/typography';
+import { useLocalizedStringFormatter } from '@react-aria/i18n';
+import l10nMessages from '#l10n';
+
+import { FormFieldInputProps } from '../../api';
+import { ExtraFieldInputProps } from '../../form-from-preview';
 
 export function MultiselectFieldInput<Value extends string>(
   props: FormFieldInputProps<readonly Value[]> & {
     options: readonly { label: string; value: Value }[];
     label: string;
     description: string | undefined;
+    combobox?: boolean;
   }
 ) {
   const labelId = useId();
   const descriptionId = useId();
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  const [, onBlur] = useReducer(() => true, false);
+
+  const valAsObjects = useMemo(() => {
+    return props.value.map(value => ({ key: value }));
+  }, [props.value]);
+
+  const availableItems = useMemo(() => {
+    const selectedSet = new Set(props.value);
+    return props.options
+      .filter(option => !selectedSet.has(option.value))
+      .map(opt => ({ value: opt.value, label: opt.label }));
+  }, [props.value, props.options]);
+
+  if (props.combobox) {
+    return (
+      <VStack gap="medium" minWidth={0}>
+        <Combobox
+          label={props.label}
+          description={props.description}
+          selectedKey={null}
+          placeholder={
+            availableItems.length === 0 ? stringFormatter.format('allSelected') : undefined
+          }
+          onSelectionChange={key => {
+            if (typeof key === 'string') {
+              props.onChange([...props.value, key as Value]);
+            }
+          }}
+          disabledKeys={[stringFormatter.format('noMoreItemsEllipsis')]}
+          onBlur={onBlur}
+          autoFocus={props.autoFocus}
+          defaultItems={
+            availableItems.length
+              ? availableItems
+              : [{ value: stringFormatter.format('noMoreItemsEllipsis'), label: stringFormatter.format('noMoreItemsEllipsis') }]
+          }
+          isReadOnly={availableItems.length === 0}
+          width="auto"
+        >
+          {item => <Item key={item.value}>{item.label}</Item>}
+        </Combobox>
+        <MultiselectListView
+          autoFocus={props.autoFocus}
+          forceValidation={props.forceValidation}
+          onChange={value => {
+            props.onChange(value.map(x => x.key as Value));
+          }}
+          elements={valAsObjects}
+          options={props.options}
+          aria-label={props.label}
+        />
+      </VStack>
+    );
+  }
+
   return (
     <Flex
       role="group"
@@ -46,5 +117,145 @@ export function MultiselectFieldInput<Value extends string>(
         </Checkbox>
       ))}
     </Flex>
+  );
+}
+
+function MultiselectListView<Value extends string>(
+  props: ExtraFieldInputProps & {
+    'aria-label': string;
+    elements: { key: Value }[];
+    options: readonly { label: string; value: Value }[];
+    onChange: (elements: { key: Value }[]) => void;
+  }
+) {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(
+    () => new Set([])
+  );
+  let onMove = (keys: Key[], target: ItemDropTarget) => {
+    const targetIndex = props.elements.findIndex(x => x.key === target.key);
+    if (targetIndex === -1) return;
+    const allKeys = props.elements.map(x => ({ key: x.key }));
+    const indexToMoveTo =
+      target.dropPosition === 'before' ? targetIndex : targetIndex + 1;
+    const indices = keys.map(key => allKeys.findIndex(x => x.key === key));
+    props.onChange(move(allKeys, indices, indexToMoveTo));
+  };
+
+  const dragType = useMemo(() => Math.random().toString(36), []);
+
+  let { dragAndDropHooks } = useDragAndDrop({
+    getItems(keys) {
+      // Use a drag type so the items can only be reordered within this list
+      // and not dragged elsewhere.
+      return [...keys].map(key => {
+        key = JSON.stringify(key);
+        return {
+          [dragType]: key,
+          'text/plain': key,
+        };
+      });
+    },
+    getAllowedDropOperations() {
+      return ['move', 'cancel'];
+    },
+    async onDrop(e) {
+      if (e.target.type !== 'root' && e.target.dropPosition !== 'on') {
+        let keys = [];
+        for (let item of e.items) {
+          if (item.kind === 'text') {
+            let key;
+            if (item.types.has(dragType)) {
+              key = JSON.parse(await item.getText(dragType));
+              keys.push(key);
+            } else if (item.types.has('text/plain')) {
+              // Fallback for Chrome Android case: https://bugs.chromium.org/p/chromium/issues/detail?id=1293803
+              // Multiple drag items are contained in a single string so we need to split them out
+              key = await item.getText('text/plain');
+              keys = key.split('\n').map(val => val.replaceAll('"', ''));
+            }
+          }
+        }
+        onMove(keys, e.target);
+      }
+    },
+    getDropOperation(target) {
+      if (target.type === 'root' || target.dropPosition === 'on') {
+        return 'cancel';
+      }
+
+      return 'move';
+    },
+  });
+
+  const optionsMap = useMemo(() => {
+    return new Map(props.options.map(opt => [opt.value, opt.label]));
+  }, [props.options]);
+
+  return (
+    <ActionBarContainer maxHeight="scale.3400" minHeight="scale.1600">
+      <ListView
+        aria-label={props['aria-label']}
+        items={props.elements}
+        dragAndDropHooks={dragAndDropHooks}
+        selectionMode="multiple"
+        onSelectionChange={setSelectedKeys}
+        selectedKeys={selectedKeys}
+        renderEmptyState={() => <ArrayFieldEmptyState />}
+        density="compact"
+        UNSAFE_className={css({
+          borderRadius: tokenSchema.size.radius.regular,
+        })}
+      >
+        {item => {
+          const label = optionsMap.get(item.key) || item.key;
+          return (
+            <Item key={item.key} textValue={label}>
+              {label}
+            </Item>
+          );
+        }}
+      </ListView>
+      <ActionBar
+        selectedItemCount={selectedKeys === 'all' ? 'all' : selectedKeys.size}
+        onClearSelection={() => setSelectedKeys(new Set())}
+        onAction={key => {
+          if (key === 'delete') {
+            let newItems = props.elements;
+            if (selectedKeys instanceof Set) {
+              newItems = props.elements.filter(
+                item => !selectedKeys.has(item.key)
+              );
+            } else if (selectedKeys === 'all') {
+              newItems = [];
+            }
+            props.onChange(newItems);
+            setSelectedKeys(new Set());
+          }
+        }}
+      >
+        <Item key="delete" textValue={stringFormatter.format('remove')}>
+          <Icon src={trash2Icon} />
+          <Text>{stringFormatter.format('remove')}</Text>
+        </Item>
+      </ActionBar>
+    </ActionBarContainer>
+  );
+}
+
+function ArrayFieldEmptyState() {
+  const stringFormatter = useLocalizedStringFormatter(l10nMessages);
+  return (
+    <VStack
+      gap="large"
+      alignItems="center"
+      justifyContent="center"
+      height="100%"
+      padding="regular"
+    >
+      <Text align="center" color="neutralTertiary">
+        {stringFormatter.format('noItemsSelectedEllipsis')}
+      </Text>
+    </VStack>
   );
 }

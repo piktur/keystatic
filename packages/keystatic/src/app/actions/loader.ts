@@ -12,6 +12,13 @@ export type CollectionActionModule = {
 
 let actionModulesCache: Record<string, CollectionActionModule> | null = null;
 
+/**
+ * @example Set global actions components cache
+ * window.__KS_ACTION_LOADER__ = import.meta.glob([
+ *   '/src/actions/components/*.ts',
+ *   '/src/actions/components/*.tsx'
+ * ], { eager: false })
+ */
 export async function loadCollectionActions(
   collectionName: string
 ): Promise<CollectionAction[]> {
@@ -43,6 +50,10 @@ export async function loadCollectionActions(
   return actions;
 }
 
+export function clearActionCache(): void {
+  actionModulesCache = null;
+}
+
 async function loadActionModules(): Promise<
   Record<string, CollectionActionModule>
 > {
@@ -70,10 +81,6 @@ async function loadActionModules(): Promise<
 
 function getActionName(path: string): string {
   return path
-    .replace(/^.*\/keystatic\/actions/, '')
-    .replace(/\.(ts|js|tsx|jsx)$/, '');
-}
-
-export function clearActionCache(): void {
-  actionModulesCache = null;
+    .replace(/^.*\/actions\/components\//, '')
+    .replace(/(index)?\.(ts|js|tsx|jsx)$/, '');
 }
