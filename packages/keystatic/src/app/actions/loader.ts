@@ -26,15 +26,12 @@ export async function loadCollectionActions(
     return [];
   }
 
-  if (!actionModulesCache) {
-    actionModulesCache = await loadActionModules();
-  }
+  if (!actionModulesCache) (actionModulesCache = await loadActionModules());
 
   const actions: CollectionAction[] = [];
-  const prefix = `/${collectionName}/`;
 
   for (const [path, module] of Object.entries(actionModulesCache)) {
-    if (path.includes(prefix)) {
+    if (path.includes(collectionName)) {
       actions.push({
         key: module.key,
         label: module.label,
@@ -82,5 +79,7 @@ async function loadActionModules(): Promise<
 function getActionName(path: string): string {
   return path
     .replace(/^.*\/actions\/components\//, '')
-    .replace(/(index)?\.(ts|js|tsx|jsx)$/, '');
+    .replace(/(index)?\.(ts|js|tsx|jsx)$/, '')
+    .replace(/^\//, '')
+    .replace(/\/$/, '');
 }
