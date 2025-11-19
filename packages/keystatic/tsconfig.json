@@ -16,6 +16,14 @@
     "target": "esnext",
     "types": ["node", "jest"]
   },
-  "include": ["**/*"],
-  "exclude": ["**/dist/**/*", "**/node_modules/**/*"]
+  "include": ["src", "scripts", "__generated__", "github.graphql"],
+  "exclude": [
+    "**/dist/**/*",
+    "**/node_modules/**/*",
+    "test",
+    "test-data",
+    "src/**/tests/**/*",
+    "src/**/__tests__/**/*",
+    "../../docs"
+  ]
 }

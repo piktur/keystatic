@@ -1,0 +1,18 @@
+---
+import { Keystatic } from './Keystatic.tsx';
+import config from '../../../keystatic.config';
+
+export const prerender = false;
+
+
+---
+
+<Keystatic config={config} basePath={"/bogus"} client:only="react" />
+
+<script>
+  const actionModules = import.meta.glob([
+    '/src/actions/components/*/index.ts',
+    '/src/actions/components/*/index.tsx'
+  ])
+  window.__KS_ACTION_LOADER__ = actionModules;
+</script>

@@ -23,5 +23,45 @@ export default config({
         }),
       },
     }),
+    images: collection({
+      label: 'Images',
+      slugField: 'title',
+      path: 'src/content/images/*',
+      schema: {
+        title: fields.slug({ name: { label: 'Title' } }),
+        description: fields.text({ label: 'Description', multiline: true }),
+        alt: fields.text({ label: 'Alt Text' }),
+        image: fields.image({
+          label: 'Image',
+          directory: 'src/content/images',
+        }),
+        tags: fields.array(
+          fields.text({ label: 'Tag' }),
+          { label: 'Tags', itemLabel: (props) => props.value }
+        ),
+      },
+    }),
+    videos: collection({
+      label: 'Videos',
+      slugField: 'title',
+      path: 'src/content/videos/*',
+      schema: {
+        title: fields.slug({ name: { label: 'Title' } }),
+        description: fields.text({ label: 'Description', multiline: true }),
+        video: fields.file({
+          label: 'Video File',
+          directory: 'src/content/videos',
+        }),
+        poster: fields.image({
+          label: 'Poster/Thumbnail',
+          directory: 'src/content/videos/posters',
+        }),
+        duration: fields.number({ label: 'Duration (seconds)' }),
+        tags: fields.array(
+          fields.text({ label: 'Tag' }),
+          { label: 'Tags', itemLabel: (props) => props.value }
+        ),
+      },
+    }),
   },
 });

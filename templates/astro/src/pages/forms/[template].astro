@@ -1,0 +1,60 @@
+---
+import { KeystaticForm } from '@keystatic/core/ui';
+
+export const prerender = false;
+
+// const formConfig = config({
+//   storage: {
+//     kind: 'local',
+//   },
+//   collections: {
+//     testtesttst: collection({
+//       label: 'Test Form',
+//       slugField: 'title',
+//       path: 'src/content/forms/*',
+//       schema: {
+//         title: fields.slug({ name: { label: 'Title' } }),
+//         name: fields.text({
+//           label: 'Name',
+//           validation: { isRequired: true }
+//         }),
+//         email: fields.text({
+//           label: 'Email',
+//           validation: { isRequired: true }
+//         }),
+//         message: fields.text({
+//           label: 'Message',
+//           multiline: true,
+//           validation: { isRequired: true }
+//         }),
+//         category: fields.select({
+//           label: 'Category',
+//           options: [
+//             { label: 'General', value: 'general' },
+//             { label: 'Support', value: 'support' },
+//             { label: 'Feedback', value: 'feedback' },
+//           ],
+//           defaultValue: 'general',
+//         }),
+//       },
+//     }),
+//   },
+// });
+
+const { template } = Astro.params;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form - {template}</title>
+</head>
+<body>
+  <KeystaticForm
+    client:only="react"
+    collectionKey={template}
+  />
+</body>
+</html>

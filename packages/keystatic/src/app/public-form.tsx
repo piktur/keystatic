@@ -32,7 +32,6 @@ import { ScrollView } from './shell/primitives';
 import { SplitView, SplitPanePrimary, SplitPaneSecondary } from '@keystar/ui/split-view';
 import { useTheme, useThemeContext, ThemeProvider } from './shell/theme';
 import { locales } from './l10n/locales';
-import './public-form.css';
 
 // Polyfill for crypto.randomUUID
 const generateUUID = () => {
@@ -46,6 +45,98 @@ const generateUUID = () => {
     const v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
+};
+
+
+// @todo remove after test
+import { collection, config, } from '@keystatic/core';
+const CONFIG_testOnlyDELETE = config({
+  storage: {
+    kind: 'local',
+  },
+  collections: {
+    testtesttst: collection({
+      label: 'Test Form',
+      slugField: 'title',
+      path: 'src/content/forms/*',
+      schema: {
+        title: fields.slug({ name: { label: 'Title' } }),
+        name: fields.text({
+          label: 'Name',
+          validation: { isRequired: true }
+        }),
+        email: fields.text({
+          label: 'Email',
+          validation: { isRequired: true }
+        }),
+        message: fields.text({
+          label: 'Message',
+          multiline: true,
+          validation: { isRequired: true }
+        }),
+        address: fields.object({ $id: fields.text({ label: 'test' }), num: fields.number({ label: 'num' }) }, {
+          label: 'address',
+        }),
+        category: fields.select({
+          label: 'Category',
+          combobox: true,
+          options: [
+            { label: 'General', value: 'general' },
+            { label: 'Support', value: 'support' },
+            { label: 'Feedback', value: 'feedback' },
+          ],
+          defaultValue: 'general',
+        }),
+        categories: fields.multiselect({
+          label: 'Categories',
+          combobox: true,
+          options: [
+            { label: 'General', value: 'general' },
+            { label: 'Support', value: 'support' },
+            { label: 'Feedback', value: 'feedback' },
+          ],
+          defaultValue: ['general', 'support'],
+        }),
+        echo: fields.multiRelationship({
+          label: "Echo",
+          collection: 'testtesttst',
+        }),
+        a: fields.multiselect({
+          label: 'A',
+          combobox: true,
+          options: [
+            { label: 'General', value: 'general' },
+            { label: 'Support', value: 'support' },
+            { label: 'Feedback', value: 'feedback' },
+          ],
+          defaultValue: ['general', 'support'],
+        }),
+        b: fields.multiselect({
+          label: 'B',
+          combobox: true,
+          options: [
+            { label: 'General', value: 'general' },
+            { label: 'Support', value: 'support' },
+            { label: 'Feedback', value: 'feedback' },
+          ],
+          defaultValue: ['general', 'support'],
+        }),
+        c: fields.multiselect({
+          label: 'C',
+          combobox: true,
+          options: [
+            { label: 'General', value: 'general' },
+            { label: 'Support', value: 'support' },
+            { label: 'Feedback', value: 'feedback' },
+          ],
+          defaultValue: ['general', 'support'],
+        }),
+      },
+    }),
+  },
+});
+const testOnlyDELETE = async (data: any) => {
+  console.log('Form submitted:', data);
 };
 
 export type SerializedFormData = {
@@ -181,9 +272,9 @@ function LocaleMenu() {
 
 
 function KeystaticFormInner({
-  config,
+  config = CONFIG_testOnlyDELETE,
   collectionKey,
-  onSubmit,
+  onSubmit = testOnlyDELETE,
 }: KeystaticFormProps) {
   const stringFormatter = useLocalizedStringFormatter(l10nMessages);
   const collectionConfig = config.collections![collectionKey];
